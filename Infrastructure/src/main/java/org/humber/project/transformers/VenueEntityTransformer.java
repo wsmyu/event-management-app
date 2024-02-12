@@ -1,0 +1,31 @@
+package org.humber.project.transformers;
+
+import org.humber.project.domain.Venue;
+import org.humber.project.entities.VenueEntity;
+
+public class VenueEntityTransformer {
+
+    public static VenueEntity transformToVenueEntity(Venue venue){
+        VenueEntity venueEntity = new VenueEntity();
+        venueEntity.setVenueId(venue.getVenueId());
+        venueEntity.setVenueName(venueEntity.getVenueName());
+        venueEntity.setCity(venueEntity.getCity());
+        venueEntity.setCountry(venueEntity.getCountry());
+        venueEntity.setAddress(venueEntity.getAddress());
+        venueEntity.setCapacity(venue.getCapacity());
+        venueEntity.setDescription(venue.getDescription());
+        return venueEntity;
+    }
+
+    public static Venue transformToVenue(VenueEntity venueEntity){
+        return Venue.builder()
+                .venueId(venueEntity.getVenueId())
+                .venueName(venueEntity.getVenueName())
+                .capacity(venueEntity.getCapacity())
+                .city(venueEntity.getCity())
+                .country(venueEntity.getCountry())
+                .address(venueEntity.getAddress())
+                .description(venueEntity.getDescription())
+                .build();
+    }
+}
