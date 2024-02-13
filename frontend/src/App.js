@@ -1,18 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import EventDetailPage from './EventDetailPage';
-import CreateEventPage from './CreateEventPage';
-
+import {Route, Routes } from 'react-router-dom';
+import EventDetailPage from "./pages/EventDetailPage";
+import CreateEventPage from "./pages/CreateEventPage";
+import Header from "./components/Header";
+import "./App.css";
 function App() {
     return (
-        <Router>
+
             <div className="App">
-                <Switch>
-                    <Route path="/event/:id" component={EventDetailPage} />
-                    <Route path="/create-event" component={CreateEventPage} />
-                </Switch>
+                <Header />
+                <Routes>
+                    <Route path="/event/:id" element={<EventDetailPage />} />
+                    <Route path="/create-event" element={<CreateEventPage />} />
+                </Routes>
             </div>
-        </Router>
+
     );
 }
 
