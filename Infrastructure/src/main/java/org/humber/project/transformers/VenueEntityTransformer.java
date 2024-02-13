@@ -3,6 +3,9 @@ package org.humber.project.transformers;
 import org.humber.project.domain.Venue;
 import org.humber.project.entities.VenueEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class VenueEntityTransformer {
 
     public static VenueEntity transformToVenueEntity(Venue venue){
@@ -27,5 +30,11 @@ public class VenueEntityTransformer {
                 .address(venueEntity.getAddress())
                 .description(venueEntity.getDescription())
                 .build();
+    }
+
+    public static List<Venue> transformToVenues(List<VenueEntity> entities) {
+        return entities.stream()
+                .map(VenueEntityTransformer::transformToVenue)
+                .collect(Collectors.toList());
     }
 }

@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface VenueJPAService {
     Venue createVenue(Venue venue);
-    Optional<Venue> getVenueById(Long id);
+    Venue getVenueById(Long id);
     List<Venue> getAllVenues();
-    Venue updateVenue(Long id, Venue updatedVenue);
+//    Venue updateVenue(Long id, Venue updatedVenue);
 
 }

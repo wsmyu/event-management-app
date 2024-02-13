@@ -1,13 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
-import EventDetailPage from "./pages/EventDetailPage";
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import EventDetailPage from './EventDetailPage';
+import CreateEventPage from './CreateEventPage';
 
 function App() {
-  return (
-    <div className="App">
-     <EventDetailPage />
-    </div>
-  );
+    return (
+        <Router>
+            <div className="App">
+                <Switch>
+                    <Route path="/event/:id" component={EventDetailPage} />
+                    <Route path="/create-event" component={CreateEventPage} />
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
