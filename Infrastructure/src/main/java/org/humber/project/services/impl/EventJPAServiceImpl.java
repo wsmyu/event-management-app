@@ -40,7 +40,7 @@ public class EventJPAServiceImpl implements EventJPAService {
     }
 
     @Override
-    public void deleteEvent(Long eventId) {
+    public void deleteEventById(Long eventId) {
         eventJPARepository.deleteById(eventId);
     }
 }

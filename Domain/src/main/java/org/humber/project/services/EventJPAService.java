@@ -8,5 +8,5 @@ public interface EventJPAService {
     Event saveEvent(Event event);
     Event findEventById(Long eventId);
     List<Event> findEventsByUserId(Long userId);
-    void deleteEvent(Long eventId);
+    void deleteEventById(Long eventId);
 }

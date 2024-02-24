@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 const CreateEventPage = () => {
     const [event, setEvent] = useState({
+        userId:'',
         eventName: '',
         eventType: '',
         eventDate: '',
@@ -17,9 +18,26 @@ const CreateEventPage = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
+        try {
+            const response = await fetch('http://localhost:8080/api/events/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(event)
+            });
+            if (response.ok) {
+                alert('Event created successfully!');
+            } else {
+                console.log('Failed to create event');
+            }
+        } catch (error) {
+            console.error('Error creating event:', error);
+            alert('Failed to create event');
+        }
     };
 
     return (
@@ -28,6 +46,12 @@ const CreateEventPage = () => {
                 <div>
                     <h1>Create Event</h1>
                     <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="eventName" className="form-label">User Id</label>
+                            <input type="text" className="form-control input-box" id="userId" name="userId"
+                                   value={event.userId}
+                                   onChange={handleChange}/>
+                        </div>
                         <div className="mb-3">
                             <label htmlFor="eventName" className="form-label">Event Name</label>
                             <input type="text" className="form-control input-box" id="eventName" name="eventName"

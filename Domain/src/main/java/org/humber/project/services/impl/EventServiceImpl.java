@@ -61,7 +61,6 @@ public class EventServiceImpl implements EventService {
 
         return eventJPAService.saveEvent(existingEvent);
     }
-
     @Override
     public void deleteEvent(Long eventId) {
         Event event = retrieveEventDetails(eventId);
@@ -70,6 +69,6 @@ public class EventServiceImpl implements EventService {
         }
         //Add validate user later
 
-        eventJPAService.deleteEvent(eventId);
+        eventJPAService.deleteEventById(eventId);
     }
 }

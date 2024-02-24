@@ -12,8 +12,8 @@
 	<artifactId>EventManagementApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>your-project-name</name>
-	<description>your-project-name</description>
+	<name>Event-Management-App</name>
+	<description>Event Management App</description>
 	<modules>
 		<module>Infrastructure</module>
 		<module>Domain</module>
@@ -44,10 +44,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.flywaydb</groupId>-->
-<!--			<artifactId>flyway-core</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>7.15.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
@@ -91,7 +93,7 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
-			<version>8.2.0</version>
+			<version>8.0.33</version>
 		</dependency>
 	</dependencies>
 

@@ -35,4 +35,16 @@ public class EventController {
         Event updatedEvent = eventService.updateEvent(eventId, event);
         return ResponseEntity.ok().body(updatedEvent);
     }
+
+    @DeleteMapping("/{eventId}/delete")
+    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
+        try {
+            eventService.deleteEvent(eventId);
+            return ResponseEntity.ok().body("Event with ID " + eventId + " deleted successfully");
+        } catch (EventNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete event");
+        }
+    }
 }
