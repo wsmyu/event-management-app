@@ -9,4 +9,5 @@ public interface BookingJPAService {
     Booking getBookingByEventId(Long eventId);
     Booking saveBooking(Booking booking);
     void deleteById(Long bookingId);
+    Booking updateBooking(Booking booking);
 }

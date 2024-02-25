@@ -41,16 +41,10 @@ public class EventServiceImpl implements EventService {
             }
 
             // Create a booking request to check venue availability
-            VenueBookingRequest bookingRequest = new VenueBookingRequest();
-            bookingRequest.setUserId(event.getUserId());
-            bookingRequest.setVenueId(event.getVenueId());
-            bookingRequest.setBookingDate(event.getEventDate());
-            bookingRequest.setBookingStartTime(event.getEventStartTime());
-            bookingRequest.setBookingEndTime(event.getEventEndTime());
+            VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, null);
 
             // Check if the venue is available for the specified date and time
-            boolean isVenueAvailable = venueService.checkVenueAvailability(bookingRequest);
-            if (!isVenueAvailable) {
+            if (!isVenueAvailableForEvent(bookingRequest)) {
                 throw new VenueNotAvailableException("Venue is not available at the requested date and time");
             }
 
@@ -64,7 +58,6 @@ public class EventServiceImpl implements EventService {
             return savedEvent;
         } catch (VenueNotAvailableException e) {
             System.err.println("Venue is not available: " + e.getMessage());
-            // Handle the exception appropriately, e.g., log it or return an error response
             throw e; // Rethrow the exception to stop further processing
         } catch (Exception e) {
             System.err.println("Failed to create event: " + e.getMessage());
@@ -89,7 +82,34 @@ public class EventServiceImpl implements EventService {
             throw new EventNotFoundException("Event not found with ID: " + eventId);
         }
 
-        //Add validate user later
+        // Check if the venue ID has been changed
+        if (!existingEvent.getVenueId().equals(event.getVenueId()) ||
+                !existingEvent.getEventStartTime().equals(event.getEventStartTime()) ||
+                !existingEvent.getEventEndTime().equals(event.getEventEndTime())) {
+
+            Booking exisitngBooking = bookingService.retrieveBookingByEventId(eventId);
+            bookingService.deleteBookingById(exisitngBooking.getBookingId());
+
+            // Create a booking request to check venue availability
+            VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, eventId);
+
+//             Check if the venue is available for the updated event
+            if (!isVenueAvailableForEvent(bookingRequest)) {
+                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
+            }
+
+            // If venue is available, update the event's venue ID
+            existingEvent.setVenueId(event.getVenueId());
+
+            // Perform booking for the updated event
+            try {
+                venueService.bookVenue(bookingRequest);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to book venue", e);
+            }
+        }
+
+        // Update other event details
         existingEvent.setEventName(event.getEventName());
         existingEvent.setEventType(event.getEventType());
         existingEvent.setEventDate(event.getEventDate());
@@ -97,8 +117,10 @@ public class EventServiceImpl implements EventService {
         existingEvent.setEventEndTime(event.getEventEndTime());
         existingEvent.setEventDescription(event.getEventDescription());
 
+        // Save the updated event
         return eventJPAService.saveEvent(existingEvent);
     }
+
     @Override
     public void deleteEvent(Long eventId) {
         //Add validate user later
@@ -115,5 +137,26 @@ public class EventServiceImpl implements EventService {
         }
 
         eventJPAService.deleteEventById(eventId);
+    }
+
+    private boolean isVenueAvailableForEvent(VenueBookingRequest bookingRequest) {
+        try {
+            return venueService.checkVenueAvailability(bookingRequest);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to check venue availability", e);
+        }
+    }
+
+    private VenueBookingRequest createBookingRequestFromEvent(Event event, Long eventId) {
+        VenueBookingRequest bookingRequest = new VenueBookingRequest();
+        if (eventId != null) {
+            bookingRequest.setEventId(eventId);
+        }
+        bookingRequest.setUserId(event.getUserId());
+        bookingRequest.setVenueId(event.getVenueId());
+        bookingRequest.setBookingDate(event.getEventDate());
+        bookingRequest.setBookingStartTime(event.getEventStartTime());
+        bookingRequest.setBookingEndTime(event.getEventEndTime());
+        return bookingRequest;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
+import java.awt.print.Book;
 import java.util.List;
 
 @Service
@@ -37,5 +38,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking retrieveBookingByEventId(Long eventId){
         return bookingJPAService.getBookingByEventId(eventId);
+    }
+
+    @Override
+    public Booking updateBooking(Booking booking){
+        return bookingJPAService.updateBooking(booking);
     }
 }
