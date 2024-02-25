@@ -17,5 +17,6 @@ public class VenueBookingRequest {
     private Long venueId;
     private Long eventId;
     private LocalDate bookingDate;
-    private LocalTime bookingTime;
+    private LocalTime bookingStartTime;
+    private LocalTime bookingEndTime;
 }

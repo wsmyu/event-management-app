@@ -35,8 +35,11 @@ public class EventEntity {
     @Column(name = "event_date")
     private LocalDate eventDate;
 
-    @Column(name = "event_time")
-    private LocalTime eventTime;
+    @Column(name = "event_start_time")
+    private LocalTime eventStartTime;
+
+    @Column(name = "event_end_time")
+    private LocalTime eventEndTime;
 
     @Column(name = "event_description")
     private String eventDescription;

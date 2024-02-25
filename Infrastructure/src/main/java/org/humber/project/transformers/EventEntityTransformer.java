@@ -12,7 +12,8 @@ public class EventEntityTransformer {
         eventEntity.setEventName(event.getEventName());
         eventEntity.setEventType(event.getEventType());
         eventEntity.setEventDate(event.getEventDate());
-        eventEntity.setEventTime(event.getEventTime());
+        eventEntity.setEventStartTime(event.getEventStartTime());
+        eventEntity.setEventEndTime(event.getEventEndTime());
         eventEntity.setEventDescription(event.getEventDescription());
         return eventEntity;
     }
@@ -25,7 +26,8 @@ public class EventEntityTransformer {
                 .eventName(eventEntity.getEventName())
                 .eventType(eventEntity.getEventType())
                 .eventDate(eventEntity.getEventDate())
-                .eventTime(eventEntity.getEventTime())
+                .eventStartTime(eventEntity.getEventStartTime())
+                .eventEndTime(eventEntity.getEventEndTime())
                 .eventDescription(eventEntity.getEventDescription())
                 .build();
     }
