@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +27,12 @@ public class BookingEntity {
 
     @Column(name = "venue_id")
     private Long venueId;
+
+    @Column(name = "booking_start_time")
+    private LocalTime bookingStartTime;
+
+    @Column(name = "booking_end_time")
+    private LocalTime bookingEndTime;
 
     @Column(name = "booking_creation_date")
     private LocalDate bookingCreationDate;

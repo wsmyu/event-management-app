@@ -11,6 +11,7 @@ public interface VenueJPAService {
     Booking bookVenue(VenueBookingRequest bookingRequest);
     Venue getVenueById(Long venueId);
     List<Venue> getAllVenues();
+    boolean isVenueAvailable(VenueBookingRequest venueBookingRequest);
 //    Venue updateVenue(Long id, Venue updatedVenue);
 
 }

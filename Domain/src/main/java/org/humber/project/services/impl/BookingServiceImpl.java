@@ -4,10 +4,12 @@ import org.humber.project.domain.Booking;
 import org.humber.project.services.BookingJPAService;
 import org.humber.project.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+
 @Service
 public class BookingServiceImpl implements BookingService {
     private final BookingJPAService bookingJPAService;
@@ -19,8 +21,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> retrieveVenueBookings(Long venueId){
-        List<Booking> bookings = bookingJPAService.getBookingsByVenueId(venueId);
-        return bookings;
+        return bookingJPAService.getBookingsByVenueId(venueId);
     }
 
     @Override
@@ -28,4 +29,13 @@ public class BookingServiceImpl implements BookingService {
         return bookingJPAService.saveBooking(booking);
     }
 
+    @Override
+    public void deleteBookingById(Long bookingId) {
+        bookingJPAService.deleteById(bookingId);
+    }
+
+    @Override
+    public Booking retrieveBookingByEventId(Long eventId){
+        return bookingJPAService.getBookingByEventId(eventId);
+    }
 }

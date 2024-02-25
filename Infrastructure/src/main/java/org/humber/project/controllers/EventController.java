@@ -2,6 +2,7 @@ package org.humber.project.controllers;
 
 import org.humber.project.domain.Event;
 import org.humber.project.exceptions.EventNotFoundException;
+import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.services.EventJPAService;
 import org.humber.project.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,15 @@ public class EventController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event createdEvent = eventService.createEvent(event);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+    public ResponseEntity<?> createEvent(@RequestBody Event event) {
+        try {
+            Event createdEvent = eventService.createEvent(event);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        } catch (VenueNotAvailableException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Venue is not available: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
+        }
     }
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable Long eventId) {

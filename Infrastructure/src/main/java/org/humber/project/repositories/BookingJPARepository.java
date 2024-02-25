@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface BookingJPARepository extends JpaRepository<BookingEntity,Long> {
     List<BookingEntity> findByVenueId(Long venueId);
+    BookingEntity findByEventId(Long eventId);
 }

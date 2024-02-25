@@ -14,6 +14,7 @@ import org.humber.project.services.VenueJPAService;
 import org.humber.project.transformers.EventEntityTransformer;
 import org.humber.project.transformers.VenueEntityTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Lazy
 public class VenueJPAServiceImpl implements VenueJPAService {
     private final VenueJPARepository venueJPARepository;
     private final BookingService bookingService;
@@ -42,18 +44,14 @@ public class VenueJPAServiceImpl implements VenueJPAService {
         VenueEntity venue = venueJPARepository.findById(bookingRequest.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException("Venue not found"));
 
-//         Check if the venue is available for the requested date and time
-        if (!isVenueAvailable(venue.getVenueId(), bookingRequest.getBookingDate(), bookingRequest.getBookingTime())) {
-            throw new VenueNotAvailableException("Venue is not available at the requested date and time");
-        }
-
         // Create a new Booking entity with the booking details
         Booking booking = new Booking();
         booking.setVenueId(venue.getVenueId());
         booking.setUserId(bookingRequest.getUserId());
         booking.setEventId(bookingRequest.getEventId());
+        booking.setBookingStartTime(bookingRequest.getBookingStartTime());
+        booking.setBookingEndTime(bookingRequest.getBookingEndTime());
         booking.setBookingCreationDate(LocalDate.now());
-
 
         // Create the booking entity and save to the database
         return bookingService.createBooking(booking);
@@ -73,12 +71,13 @@ public class VenueJPAServiceImpl implements VenueJPAService {
                 .orElse(null);
     }
 
-    private boolean isVenueAvailable(Long venueId, LocalDate bookingDate, LocalTime bookingTime) {
+    @Override
+    public boolean isVenueAvailable(VenueBookingRequest venueBookingRequest) {
         // Retrieve existing bookings for the venue on the given date
-        List<Booking> bookingsForDate = bookingService.retrieveVenueBookings(venueId).stream()
+        List<Booking> bookingsForDate = bookingService.retrieveVenueBookings(venueBookingRequest.getVenueId()).stream()
                 .filter(booking -> {
                     Event event = eventService.retrieveEventDetails(booking.getEventId());
-                    return event.getEventDate().equals(bookingDate);
+                    return event.getEventDate().equals(venueBookingRequest.getBookingDate());
                 })
                 .collect(Collectors.toList());
 
@@ -88,12 +87,22 @@ public class VenueJPAServiceImpl implements VenueJPAService {
         }
 
         // Check if there are any conflicting bookings at the specified time
-        boolean isAvailable = bookingsForDate.stream()
-                .noneMatch(booking -> {
-                    Event event = eventService.retrieveEventDetails(booking.getEventId());
-                    return event.getEventTime().equals(bookingTime);
-                });
+        LocalTime bookingStartTime = venueBookingRequest.getBookingStartTime();
+        LocalTime bookingEndTime = venueBookingRequest.getBookingEndTime();
 
+        boolean isAvailable = bookingsForDate.stream().noneMatch(booking -> {
+            Event event = eventService.retrieveEventDetails(booking.getEventId());
+            LocalTime eventStartTime = event.getEventStartTime();
+            LocalTime eventEndTime = event.getEventEndTime();
+
+            // Check for overlap: if either the start time or end time of the new booking
+            // falls within the existing booking's time frame
+//            return (bookingStartTime.isAfter(eventStartTime) && bookingStartTime.isBefore(eventEndTime)) ||
+//                    (bookingEndTime.isAfter(eventStartTime) && bookingEndTime.isBefore(eventEndTime));
+
+            return (bookingStartTime.isBefore(eventEndTime) && bookingEndTime.isAfter(eventStartTime)) ||
+                    (eventStartTime.isBefore(bookingEndTime) && eventEndTime.isAfter(bookingStartTime));
+        });
         return isAvailable;
     }
 

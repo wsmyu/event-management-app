@@ -1,9 +1,11 @@
 package org.humber.project.services.impl;
 
+import org.humber.project.domain.Booking;
 import org.humber.project.domain.Event;
 import org.humber.project.entities.EventEntity;
 import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.repositories.EventJPARepository;
+import org.humber.project.services.BookingService;
 import org.humber.project.services.EventJPAService;
 import org.humber.project.transformers.EventEntityTransformer;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ public class EventJPAServiceImpl implements EventJPAService {
     private final EventJPARepository eventJPARepository;
 
 
-    public EventJPAServiceImpl(EventJPARepository eventJPARepository) {
+    public EventJPAServiceImpl(EventJPARepository eventJPARepository, BookingService bookingService) {
         this.eventJPARepository = eventJPARepository;
     }
 
@@ -41,6 +43,6 @@ public class EventJPAServiceImpl implements EventJPAService {
 
     @Override
     public void deleteEventById(Long eventId) {
-        eventJPARepository.deleteById(eventId);
+         eventJPARepository.deleteById(eventId);
     }
 }

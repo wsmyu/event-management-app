@@ -6,6 +6,7 @@ import org.humber.project.domain.VenueBookingRequest;
 import org.humber.project.services.VenueJPAService;
 import org.humber.project.services.VenueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,5 +34,10 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public List<Venue> getAllVenues(){
         return venueJPAService.getAllVenues();
+    }
+
+    @Override
+    public boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest){
+        return venueJPAService.isVenueAvailable(venueBookingRequest);
     }
 }

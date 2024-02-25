@@ -10,6 +10,8 @@ public class BookingEntityTransformer {
         booking.setEventId(bookingEntity.getEventId());
         booking.setUserId(bookingEntity.getUserId());
         booking.setVenueId(bookingEntity.getVenueId());
+        booking.setBookingStartTime(bookingEntity.getBookingStartTime());
+        booking.setBookingEndTime(bookingEntity.getBookingEndTime());
         booking.setBookingCreationDate(bookingEntity.getBookingCreationDate());
         return booking;
     }
@@ -20,6 +22,8 @@ public class BookingEntityTransformer {
         bookingEntity.setEventId(booking.getEventId());
         bookingEntity.setUserId(booking.getUserId());
         bookingEntity.setVenueId(booking.getVenueId());
+        bookingEntity.setBookingStartTime(booking.getBookingStartTime());
+        bookingEntity.setBookingEndTime(booking.getBookingEndTime());
         bookingEntity.setBookingCreationDate(booking.getBookingCreationDate());
         return bookingEntity;
     }

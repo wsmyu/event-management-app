@@ -30,11 +30,21 @@ public class BookingJPAServiceImpl implements BookingJPAService {
                 .map(BookingEntityTransformer::transformToBooking) // Assuming you have a transformer class
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Booking getBookingByEventId(Long eventId) {
+        BookingEntity bookingEntity = bookingJPARepository.findByEventId(eventId);
+        return transformToBooking(bookingEntity);
+    }
     @Override
     public Booking saveBooking(Booking booking) {
         BookingEntity bookingEntity = transformToBookingEntity(booking);
         BookingEntity savedBookingEntity = bookingJPARepository.save(bookingEntity);
         return transformToBooking(savedBookingEntity);
+    }
+    @Override
+    public void deleteById(Long bookingId) {
+        bookingJPARepository.deleteById(bookingId);
     }
 
 }
