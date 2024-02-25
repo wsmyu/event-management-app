@@ -7,6 +7,7 @@ public class EventEntityTransformer {
     public static EventEntity transformToEventEntity(Event event) {
         EventEntity eventEntity = new EventEntity();
         eventEntity.setEventId(event.getEventId());
+        eventEntity.setVenueId(event.getVenueId());
         eventEntity.setUserId(event.getUserId());
         eventEntity.setEventName(event.getEventName());
         eventEntity.setEventType(event.getEventType());
@@ -20,6 +21,7 @@ public class EventEntityTransformer {
         return Event.builder()
                 .eventId(eventEntity.getEventId())
                 .userId(eventEntity.getUserId())
+                .venueId(eventEntity.getVenueId())
                 .eventName(eventEntity.getEventName())
                 .eventType(eventEntity.getEventType())
                 .eventDate(eventEntity.getEventDate())

@@ -34,8 +34,3 @@ public class VenueEntity {
     private String description;
 }
 
-//    @Column(name = "available_date")
-//    private LocalDate availableDate;
-//
-//    @Column(name = "available_time")
-//    private LocalTime availableTime;

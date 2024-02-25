@@ -23,6 +23,9 @@ public class EventEntity {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "venue_id")
+    private Long venueId;
+
     @Column(name = "event_name")
     private String eventName;
 

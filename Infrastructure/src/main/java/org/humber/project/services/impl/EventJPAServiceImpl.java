@@ -35,7 +35,7 @@ public class EventJPAServiceImpl implements EventJPAService {
     }
 
     @Override
-    public List<Event> findEventsByUserId(Long eventId){
+    public List<Event> findEventsByUserId(Long userId){
         return null;
     }
 

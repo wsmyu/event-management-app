@@ -4,20 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Event {
-    private Long eventId;
+@Builder
+public class VenueBookingRequest {
     private Long userId;
     private Long venueId;
-    private String eventName;
-    private String eventType;
-    private LocalDate eventDate;
-    private LocalTime eventTime;
-    private String eventDescription;
-
+    private Long eventId;
+    private LocalDate bookingDate;
+    private LocalTime bookingTime;
 }

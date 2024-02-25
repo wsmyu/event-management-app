@@ -1,13 +1,15 @@
 package org.humber.project.services;
 
+import org.humber.project.domain.Booking;
 import org.humber.project.domain.Venue;
+import org.humber.project.domain.VenueBookingRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface VenueJPAService {
-    Venue createVenue(Venue venue);
-    Venue getVenueById(Long id);
+    Booking bookVenue(VenueBookingRequest bookingRequest);
+    Venue getVenueById(Long venueId);
     List<Venue> getAllVenues();
 //    Venue updateVenue(Long id, Venue updatedVenue);
 
