@@ -3,6 +3,7 @@ CREATE TABLE bookings (
   event_id BIGINT NOT NULL,
   user_id BIGINT NOT NULL,
   venue_id BIGINT NOT NULL,
+  booking_date DATE NOT NULL,
   booking_creation_date DATE NOT NULL,
   booking_start_time TIME NOT NULL,
   booking_end_time TIME NOT NULL,

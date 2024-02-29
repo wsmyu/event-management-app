@@ -17,6 +17,7 @@ public class Booking {
     private Long eventId;
     private Long userId;
     private Long venueId;
+    private LocalDate bookingDate;
     private LocalTime bookingStartTime;
     private LocalTime bookingEndTime;
     private LocalDate bookingCreationDate;

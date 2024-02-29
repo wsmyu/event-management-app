@@ -49,6 +49,7 @@ public class VenueJPAServiceImpl implements VenueJPAService {
         booking.setVenueId(venue.getVenueId());
         booking.setUserId(bookingRequest.getUserId());
         booking.setEventId(bookingRequest.getEventId());
+        booking.setBookingDate(bookingRequest.getBookingDate());
         booking.setBookingStartTime(bookingRequest.getBookingStartTime());
         booking.setBookingEndTime(bookingRequest.getBookingEndTime());
         booking.setBookingCreationDate(LocalDate.now());

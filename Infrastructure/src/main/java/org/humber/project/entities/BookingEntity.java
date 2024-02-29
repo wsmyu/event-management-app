@@ -28,6 +28,9 @@ public class BookingEntity {
     @Column(name = "venue_id")
     private Long venueId;
 
+    @Column(name="booking_date")
+    private LocalDate bookingDate;
+
     @Column(name = "booking_start_time")
     private LocalTime bookingStartTime;
 
