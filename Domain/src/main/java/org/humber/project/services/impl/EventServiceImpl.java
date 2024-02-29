@@ -31,8 +31,9 @@ public class EventServiceImpl implements EventService {
         this.venueService = venueService;
         this.bookingService = bookingService;
     }
+
     @Override
-    public Event createEvent(Event event) throws Exception {
+    public Event createEvent(Event event) {
         try {
             // Validate that the event date is in the future
             LocalDate currentDate = LocalDate.now();
@@ -61,7 +62,7 @@ public class EventServiceImpl implements EventService {
             throw e; // Rethrow the exception to stop further processing
         } catch (Exception e) {
             System.err.println("Failed to create event: " + e.getMessage());
-            throw new Exception("Failed to create event", e);
+            return null;
         }
     }
 
@@ -77,48 +78,52 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event updateEvent(Long eventId, Event event) {
-        Event existingEvent = eventJPAService.findEventById(eventId);
-        if (existingEvent == null) {
-            throw new EventNotFoundException("Event not found with ID: " + eventId);
-        }
+        try {
+            Event existingEvent = eventJPAService.findEventById(eventId);
+            if (existingEvent == null) {
+                throw new EventNotFoundException("Event not found with ID: " + eventId);
+            }
 
-        // Check if the venue ID has been changed
-        if (!existingEvent.getVenueId().equals(event.getVenueId()) ||
-                !existingEvent.getEventStartTime().equals(event.getEventStartTime()) ||
-                !existingEvent.getEventEndTime().equals(event.getEventEndTime())) {
+            // Check if the venue ID/event date /event time has been changed
+            if (!existingEvent.getVenueId().equals(event.getVenueId()) ||
+                    !existingEvent.getEventStartTime().equals(event.getEventStartTime()) ||
+                    !existingEvent.getEventEndTime().equals(event.getEventEndTime())) {
 
-            Booking exisitngBooking = bookingService.retrieveBookingByEventId(eventId);
-            bookingService.deleteBookingById(exisitngBooking.getBookingId());
+                Booking exisitngBooking = bookingService.retrieveBookingByEventId(eventId);
 
-            // Create a booking request to check venue availability
-            VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, eventId);
+                // Create a booking request to check venue availability
+                VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, eventId);
 
 //             Check if the venue is available for the updated event
-            if (!isVenueAvailableForEvent(bookingRequest)) {
-                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
-            }
+                if (!isVenueAvailableForEvent(bookingRequest)) {
+                    throw new VenueNotAvailableException("Venue is not available at the requested date and time");
+                }
 
-            // If venue is available, update the event's venue ID
-            existingEvent.setVenueId(event.getVenueId());
+                // If venue is available, update the event's venue ID
+                existingEvent.setVenueId(event.getVenueId());
 
-            // Perform booking for the updated event
-            try {
+                // Perform booking for the updated event and delete the old booking
+                bookingService.deleteBookingById(exisitngBooking.getBookingId());
                 venueService.bookVenue(bookingRequest);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to book venue", e);
             }
+
+            // Update other event details
+            existingEvent.setEventName(event.getEventName());
+            existingEvent.setEventType(event.getEventType());
+            existingEvent.setEventDate(event.getEventDate());
+            existingEvent.setEventStartTime(event.getEventStartTime());
+            existingEvent.setEventEndTime(event.getEventEndTime());
+            existingEvent.setEventDescription(event.getEventDescription());
+
+            // Save the updated event
+            return eventJPAService.saveEvent(existingEvent);
+        } catch (VenueNotAvailableException e) {
+            System.err.println("Venue is not available: " + e.getMessage());
+            throw e; // Rethrow the exception to stop further processing
+        } catch (Exception e) {
+            System.err.println("Failed to update event" + e.getMessage());
+            throw new RuntimeException("Failed to update event", e);
         }
-
-        // Update other event details
-        existingEvent.setEventName(event.getEventName());
-        existingEvent.setEventType(event.getEventType());
-        existingEvent.setEventDate(event.getEventDate());
-        existingEvent.setEventStartTime(event.getEventStartTime());
-        existingEvent.setEventEndTime(event.getEventEndTime());
-        existingEvent.setEventDescription(event.getEventDescription());
-
-        // Save the updated event
-        return eventJPAService.saveEvent(existingEvent);
     }
 
     @Override
