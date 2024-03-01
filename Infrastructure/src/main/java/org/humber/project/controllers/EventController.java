@@ -2,6 +2,7 @@ package org.humber.project.controllers;
 
 import org.humber.project.domain.Event;
 import org.humber.project.exceptions.EventNotFoundException;
+import org.humber.project.exceptions.EventValidationException;
 import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.services.EventJPAService;
 import org.humber.project.services.EventService;
@@ -27,7 +28,10 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
         } catch (VenueNotAvailableException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Venue is not available: " + e.getMessage());
-        } catch (Exception e) {
+        } catch (EventValidationException e) {
+            // If event validation fails, return a 400 Bad Request response with an error message
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
         }
     }

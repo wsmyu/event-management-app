@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/venues")
 public class VenueController {
@@ -20,6 +22,11 @@ public class VenueController {
         this.venueService = venueService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<Venue>> getAllVenues() {
+        List<Venue> venues = venueService.getAllVenues();
+        return ResponseEntity.ok(venues);
+    }
     @PostMapping("/{id}/book")
     public ResponseEntity<?> bookVenue(@PathVariable("id") Long venueId, @RequestBody VenueBookingRequest bookingRequest) {
         try {

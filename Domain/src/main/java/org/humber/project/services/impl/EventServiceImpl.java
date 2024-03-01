@@ -4,17 +4,15 @@ import org.humber.project.domain.Booking;
 import org.humber.project.domain.Event;
 import org.humber.project.domain.VenueBookingRequest;
 import org.humber.project.exceptions.EventNotFoundException;
+import org.humber.project.exceptions.EventValidationException;
 import org.humber.project.exceptions.VenueNotAvailableException;
-import org.humber.project.services.BookingService;
-import org.humber.project.services.EventJPAService;
-import org.humber.project.services.EventService;
-import org.humber.project.services.VenueService;
+import org.humber.project.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -23,18 +21,26 @@ public class EventServiceImpl implements EventService {
     private final EventJPAService eventJPAService;
     private final VenueService venueService;
     private final BookingService bookingService;
+    private final List<EventValidationService> eventValidationService;
 
 
     @Autowired
-    public EventServiceImpl(EventJPAService eventJPAService, @Lazy VenueService venueService, BookingService bookingService) {
+    public EventServiceImpl(EventJPAService eventJPAService, @Lazy VenueService venueService, BookingService bookingService, List<EventValidationService> eventValidationService) {
         this.eventJPAService = eventJPAService;
         this.venueService = venueService;
         this.bookingService = bookingService;
+        this.eventValidationService = eventValidationService;
     }
 
     @Override
     public Event createEvent(Event event) {
         try {
+            //Validate event end time is after the event start time
+            for (EventValidationService validationService : eventValidationService) {
+                // Perform validation using the current validation service
+                validationService.validateEvent(event);
+            }
+
             // Validate that the event date is in the future
             LocalDate currentDate = LocalDate.now();
             if (event.getEventDate() != null && event.getEventDate().isBefore(currentDate)) {
@@ -57,10 +63,10 @@ public class EventServiceImpl implements EventService {
             venueService.bookVenue(bookingRequest);
 
             return savedEvent;
-        } catch (VenueNotAvailableException e) {
-            System.err.println("Venue is not available: " + e.getMessage());
+        } catch (EventValidationException e){
+            System.err.println("Event Invalid: " + e.getMessage());
             throw e; // Rethrow the exception to stop further processing
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.err.println("Failed to create event: " + e.getMessage());
             return null;
         }
