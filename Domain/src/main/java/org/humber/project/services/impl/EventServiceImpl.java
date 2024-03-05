@@ -87,6 +87,14 @@ public class EventServiceImpl implements EventService {
                 throw new EventNotFoundException("Event not found with ID: " + eventId);
             }
 
+            // Update event details
+            existingEvent.setEventName(event.getEventName());
+            existingEvent.setEventType(event.getEventType());
+            existingEvent.setEventDate(event.getEventDate());
+            existingEvent.setEventStartTime(event.getEventStartTime());
+            existingEvent.setEventEndTime(event.getEventEndTime());
+            existingEvent.setEventDescription(event.getEventDescription());
+
             // Check if the venue ID/event date /event time has been changed
             if (!existingEvent.getVenueId().equals(event.getVenueId()) ||
                     !existingEvent.getEventStartTime().equals(event.getEventStartTime()) ||
@@ -110,13 +118,7 @@ public class EventServiceImpl implements EventService {
                 venueService.bookVenue(bookingRequest);
             }
 
-            // Update other event details
-            existingEvent.setEventName(event.getEventName());
-            existingEvent.setEventType(event.getEventType());
-            existingEvent.setEventDate(event.getEventDate());
-            existingEvent.setEventStartTime(event.getEventStartTime());
-            existingEvent.setEventEndTime(event.getEventEndTime());
-            existingEvent.setEventDescription(event.getEventDescription());
+
 
             // Save the updated event
             return eventJPAService.saveEvent(existingEvent);

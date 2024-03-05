@@ -1,5 +1,6 @@
 import React, {useState,useEffect} from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import {Button} from "react-bootstrap";
 const CreateEventPage = () => {
     const [event, setEvent] = useState({
         userId:'',
@@ -12,6 +13,7 @@ const CreateEventPage = () => {
         venueId: ''
     });
     const [venues, setVenues] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchVenues();
@@ -104,22 +106,7 @@ const CreateEventPage = () => {
                                    value={event.eventEndTime}
                                    onChange={(e) => handleChange("eventEndTime", e.target.value)}/>
                         </div>
-                        <div className="mb-3">
-                            <label htmlFor="venueId" className="form-label">Venue</label>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="primary" id="dropdown-venue">
-                                    {event.venueId ? venues.find(v => v.venueId === event.venueId)?.venueName || 'Select a venue' : 'Select a venue'}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {venues.map(venue => (
-                                        <Dropdown.Item key={venue.venueId}
-                                                       onClick={() => handleChange("venueId", venue.venueId)}>
-                                            {venue.venueName}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div>
+
                         <div className="mb-3">
                             <label htmlFor="eventDescription" className="form-label">Event Description</label>
                             <textarea className="form-control input-description" id="eventDescription"
@@ -128,7 +115,7 @@ const CreateEventPage = () => {
                                       onChange={(e) => handleChange("eventDescription", e.target.value)}/>
                         </div>
                         <div className="text-center mt-3">
-                            <button type="submit" className="btn btn-primary">Create Event</button>
+                            <Button variant="primary" onClick={() => navigate('/venue-booking')}>Select Venue</Button>
                         </div>
                     </form>
                 </div>

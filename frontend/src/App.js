@@ -4,6 +4,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import Header from "./components/Header";
 import "./App.css";
+import VenueBookingPage from "./pages/VenueBookingPage";
 function App() {
     return (
 
@@ -12,6 +13,7 @@ function App() {
                 <Routes>
                     <Route path="/event/:id" element={<EventDetailPage />} />
                     <Route path="/create-event" element={<CreateEventPage />} />
+                    <Route path="/venue-booking" element={<VenueBookingPage />} />
                 </Routes>
             </div>
 
