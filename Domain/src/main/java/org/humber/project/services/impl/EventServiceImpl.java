@@ -48,19 +48,16 @@ public class EventServiceImpl implements EventService {
             }
 
             // Create a booking request to check venue availability
-            VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, null);
-
-            // Check if the venue is available for the specified date and time
-            if (!isVenueAvailableForEvent(bookingRequest)) {
-                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
-            }
+//            VenueBookingRequest bookingRequest = createBookingRequestFromEvent(event, null);
+//
+//            // Check if the venue is available for the specified date and time
+//            if (!isVenueAvailableForEvent(bookingRequest)) {
+//                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
+//            }
 
             // Save the event after confirming venue availability
             Event savedEvent = eventJPAService.saveEvent(event);
-            bookingRequest.setEventId(savedEvent.getEventId());
 
-            // Book the venue now that the event is successfully saved
-            venueService.bookVenue(bookingRequest);
 
             return savedEvent;
         } catch (EventValidationException e){

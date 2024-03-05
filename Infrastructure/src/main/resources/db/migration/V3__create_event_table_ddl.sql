@@ -1,7 +1,7 @@
 CREATE TABLE events (
     event_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
-    venue_id BIGINT NOT NULL,
+    venue_id BIGINT,
     event_name VARCHAR(255),
     event_type VARCHAR(255),
     event_date DATE,

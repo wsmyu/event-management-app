@@ -4,9 +4,12 @@ import org.humber.project.domain.Booking;
 import org.humber.project.domain.Event;
 import org.humber.project.domain.Venue;
 import org.humber.project.domain.VenueBookingRequest;
+import org.humber.project.entities.EventEntity;
 import org.humber.project.entities.VenueEntity;
+import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.exceptions.VenueNotFoundException;
+import org.humber.project.repositories.EventJPARepository;
 import org.humber.project.repositories.VenueJPARepository;
 import org.humber.project.services.BookingService;
 import org.humber.project.services.EventService;
@@ -27,12 +30,14 @@ import java.util.stream.Collectors;
 @Lazy
 public class VenueJPAServiceImpl implements VenueJPAService {
     private final VenueJPARepository venueJPARepository;
+    private final EventJPARepository eventJPARepository;
     private final BookingService bookingService;
     private final EventService eventService;
 
     @Autowired
-    public VenueJPAServiceImpl(VenueJPARepository venueJPARepository, BookingService bookingService, EventService eventService) {
+    public VenueJPAServiceImpl(VenueJPARepository venueJPARepository, EventJPARepository eventJPARepository, BookingService bookingService, EventService eventService) {
         this.venueJPARepository = venueJPARepository;
+        this.eventJPARepository = eventJPARepository;
         this.bookingService = bookingService;
         this.eventService = eventService;
     }
@@ -44,6 +49,11 @@ public class VenueJPAServiceImpl implements VenueJPAService {
         VenueEntity venue = venueJPARepository.findById(bookingRequest.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException("Venue not found"));
 
+        // Check if the venue is available for the specified date and time
+        if (!isVenueAvailable(bookingRequest)) {
+                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
+            }
+
         // Create a new Booking entity with the booking details
         Booking booking = new Booking();
         booking.setVenueId(venue.getVenueId());
@@ -53,6 +63,12 @@ public class VenueJPAServiceImpl implements VenueJPAService {
         booking.setBookingStartTime(bookingRequest.getBookingStartTime());
         booking.setBookingEndTime(bookingRequest.getBookingEndTime());
         booking.setBookingCreationDate(LocalDate.now());
+
+        // Update the corresponding Event entity with the booked venue's ID
+        Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
+        event.setVenueId(venue.getVenueId());
+        EventEntity eventEntity = EventEntityTransformer.transformToEventEntity(event);
+        eventJPARepository.save(eventEntity);
 
         // Create the booking entity and save to the database
         return bookingService.createBooking(booking);
