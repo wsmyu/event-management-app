@@ -39,16 +39,20 @@ public class VenueController {
             // Retrieve the corresponding event
             Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
 
-            if(event.getVenueId() != null){
-                Booking existingBooking = bookingService.retrieveBookingByEventId(event.getEventId());
-                // Delete the old booking
-                    bookingService.deleteBookingById(existingBooking.getBookingId());
-            }
 
+
+            //Create a new booking with new booking request
             Booking booking = bookingService.createBooking(bookingRequest);
 
+            //Check if the event has existing venue booking
+            //If there is existing venue booking, delete the old booking
+            if(booking!= null && event.getVenueId() != null){
+                Booking existingBooking = bookingService.retrieveBookingByEventId(event.getEventId());
+                // Delete the old booking
+                bookingService.deleteBookingById(existingBooking.getBookingId());
+            }
 
-            // Save the updated event
+            // Update the venue id of the event
             eventService.updateEventVenue(event.getEventId(), venueId);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(booking);

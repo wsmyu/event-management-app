@@ -111,7 +111,7 @@ public class EventServiceImpl implements EventService {
             // Check if the venue ID has been changed
             if (!Objects.equals(existingEvent.getVenueId(), venueId)) {
 
-                // If venue is available, update the event's venue ID
+                // Update the event's venue ID
                 existingEvent.setVenueId(venueId);
 
                 // Save the updated event
