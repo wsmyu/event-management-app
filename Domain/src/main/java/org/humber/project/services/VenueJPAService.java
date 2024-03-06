@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VenueJPAService {
-    Booking bookVenue(VenueBookingRequest bookingRequest);
+//    Booking bookVenue(VenueBookingRequest bookingRequest);
     Venue getVenueById(Long venueId);
     List<Venue> getAllVenues();
     boolean isVenueAvailable(VenueBookingRequest venueBookingRequest);
