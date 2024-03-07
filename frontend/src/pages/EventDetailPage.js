@@ -3,22 +3,43 @@ import { useParams } from 'react-router-dom';
 const EventDetailPage = () => {
     const { eventId } = useParams();
     const [event, setEvent] = useState({
-        eventId: '',
-        userId: '',
+        userId:'',
         eventName: '',
         eventType: '',
         eventDate: '',
-        eventTime: '',
-        eventDescription: ''
+        eventStartTime: '',
+        eventEndTime: '',
+        eventDescription: '',
     });
+    const formatDate = (dateArray) => {
+        const year = dateArray[0];
+        const month = dateArray[1].toString().padStart(2, '0');
+        const day = dateArray[2].toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
+    const formatTime = (timeArray) => {
+        // Extract hours and minutes from the time array
+        const hours = timeArray[0].toString().padStart(2, '0'); // Ensure two digits for hours
+        const minutes = timeArray[1].toString().padStart(2, '0'); // Ensure two digits for minutes
+        return `${hours}:${minutes}`;
+    }
     const fetchEvent = async () => {
-        //testing to fetch the detail of event with id=6
-        await fetch(`http://localhost:8080/api/events/${eventId}`)
-            .then((response) => response.json())
-            .then((data)=>setEvent(data))
-            .catch((error)=>console.error('Error fetching events:', error))
-
+        try {
+            const response = await fetch(`http://localhost:8080/api/events/${eventId}`);
+            if (response.ok) {
+                const eventData = await response.json();
+                //Format the event date and time
+                eventData.eventDate = formatDate(eventData.eventDate);
+                eventData.eventStartTime = formatTime(eventData.eventStartTime);
+                eventData.eventEndTime = formatTime(eventData.eventEndTime);
+                setEvent(eventData);
+            } else {
+                console.error('Failed to fetch event details');
+            }
+        } catch (error) {
+            console.error('Error fetching event details:', error);
+        }
     };
 
     useEffect(() => {
@@ -35,7 +56,8 @@ const EventDetailPage = () => {
                     <p className="card-text">Event Name: {event.eventName}</p>
                     <p className="card-text">Event Type: {event.eventType}</p>
                     <p className="card-text">Event Date: {event.eventDate}</p>
-                    <p className="card-text">Event Time: {event.eventTime}</p>
+                    <p className="card-text">Event Start Time: {event.eventStartTime}</p>
+                    <p className="card-text">Event End Time: {event.eventEndTime}</p>
                     <p className="card-text">Event Description: {event.eventDescription}</p>
                 </div>
             </div>
