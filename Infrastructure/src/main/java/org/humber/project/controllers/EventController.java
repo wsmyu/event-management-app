@@ -26,8 +26,6 @@ public class EventController {
         try {
             Event createdEvent = eventService.createEvent(event);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
-        } catch (VenueNotAvailableException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Venue is not available: " + e.getMessage());
         } catch (EventValidationException e) {
             // If event validation fails, return a 400 Bad Request response with an error message
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

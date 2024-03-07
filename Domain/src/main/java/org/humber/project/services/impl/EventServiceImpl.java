@@ -20,15 +20,14 @@ import java.util.Objects;
 @Service
 public class EventServiceImpl implements EventService {
     private final EventJPAService eventJPAService;
-    private final VenueService venueService;
+
     private final BookingService bookingService;
     private final List<EventValidationService> eventValidationService;
 
 
     @Autowired
-    public EventServiceImpl(EventJPAService eventJPAService, @Lazy VenueService venueService, BookingService bookingService, List<EventValidationService> eventValidationService) {
+    public EventServiceImpl(EventJPAService eventJPAService, BookingService bookingService, List<EventValidationService> eventValidationService) {
         this.eventJPAService = eventJPAService;
-        this.venueService = venueService;
         this.bookingService = bookingService;
         this.eventValidationService = eventValidationService;
     }
@@ -36,18 +35,18 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event createEvent(Event event) {
         try {
-            //Validate event end time is after the event start time
+
             for (EventValidationService validationService : eventValidationService) {
                 // Perform validation using the current validation service
                 validationService.validateEvent(event);
             }
 
             // Validate that the event date is in the future
+            //Move the validationService later
             LocalDate currentDate = LocalDate.now();
             if (event.getEventDate() != null && event.getEventDate().isBefore(currentDate)) {
                 throw new IllegalArgumentException("Event date must be in the future");
             }
-
 
             // Save the event after confirming venue availability
             Event savedEvent = eventJPAService.saveEvent(event);
@@ -116,7 +115,7 @@ public class EventServiceImpl implements EventService {
 
                 // Save the updated event
                 return eventJPAService.saveEvent(existingEvent);
-            }else{
+            } else {
                 return null;
             }
         } catch (Exception e) {
@@ -129,21 +128,21 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEvent(Long eventId) {
         //Add validate user later
-        try{
-        Event event = retrieveEventDetails(eventId);
-        if (event == null) {
-            throw new EventNotFoundException("Event with ID " + eventId + " not found");
-        }
+        try {
+            Event event = retrieveEventDetails(eventId);
+            if (event == null) {
+                throw new EventNotFoundException("Event with ID " + eventId + " not found");
+            }
 
-        // Delete associated booking
-        Booking booking = bookingService.retrieveBookingByEventId(eventId);
+            // Delete associated booking
+            Booking booking = bookingService.retrieveBookingByEventId(eventId);
 
-        if (booking != null) {
-            bookingService.deleteBookingById(booking.getBookingId());
-        }
+            if (booking != null) {
+                bookingService.deleteBookingById(booking.getBookingId());
+            }
 
-        eventJPAService.deleteEventById(eventId);
-    }catch (Exception e) {
+            eventJPAService.deleteEventById(eventId);
+        } catch (Exception e) {
             System.out.println("Error deleting event with ID " + eventId);
             e.printStackTrace();
         }
