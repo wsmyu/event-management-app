@@ -10,3 +10,8 @@
 .input-description{
   max-width:30rem;
 }
+
+.toast-body {
+  color: white;
+}
+

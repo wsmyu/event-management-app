@@ -51,34 +51,12 @@ public class EventController {
         }
     }
 
-//    @PutMapping("/{eventId}/venue/{venueId}")
-//    public ResponseEntity<?> updateEventVenue(@PathVariable Long eventId, @PathVariable Long venueId) {
-//        try{
-//        Event updatedEvent = eventService.updateEventVenue(eventId, venueId);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(updatedEvent);
-//        } catch (VenueNotAvailableException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Venue is not available: " + e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
-//        }
-//    }
 
-//    @PutMapping("/{eventId}/update")
-//    public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody Event event) {
-//        try {
-//            Event updatedEvent = eventService.updateEvent(eventId, event);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(updatedEvent);
-//        } catch (VenueNotAvailableException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Venue is not available: " + e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
-//        }
-//
-//    }
 
     @DeleteMapping("/{eventId}/delete")
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
         try {
+
             eventService.deleteEvent(eventId);
             return ResponseEntity.ok().body("Event with ID " + eventId + " deleted successfully");
         } catch (EventNotFoundException e) {

@@ -1,6 +1,10 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from 'react-bootstrap';
 import {Button} from "react-bootstrap";
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import EventForm from "../components/EventForm";
+import CustomToast from "../components/CustomToast";
 const CreateEventPage = () => {
     const [event, setEvent] = useState({
         userId:'',
@@ -10,29 +14,25 @@ const CreateEventPage = () => {
         eventStartTime: '',
         eventEndTime: '',
         eventDescription: '',
-        venueId: ''
+
     });
-    const [venues, setVenues] = useState([]);
+
     const navigate = useNavigate();
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastVariant, setToastVariant] = useState('success');
+    const [showToast, setShowToast] = useState(false);
+    const showSuccessMessage = (message) => {
+        setShowToast(true);
+        setToastVariant('success');
+        setToastMessage(message);
 
-    useEffect(() => {
-        fetchVenues();
-    }, []);
-
-    const fetchVenues = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/venues');
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                setVenues(data);
-            } else {
-                console.log('Failed to fetch venues');
-            }
-        } catch (error) {
-            console.error('Error fetching venues:', error);
-        }
+        // Hide the toast after 5 seconds (5000 milliseconds)
+        setTimeout(() => {
+            setShowToast(false);
+        }, 4000);
     };
+
+
     const handleChange = (name, value) => {
         setEvent(prevState => ({
             ...prevState,
@@ -52,10 +52,23 @@ const CreateEventPage = () => {
                 body: JSON.stringify(event)
             });
             if (response.ok) {
-                alert('Event created successfully!');
+                showSuccessMessage('Event created successfully!');
+                //Clear the form after submitting
+                setEvent({
+                    userId:'',
+                    eventName: '',
+                    eventType: '',
+                    eventDate: '',
+                    eventStartTime: '',
+                    eventEndTime: '',
+                    eventDescription: '',
+                    venueId: ''
+                });
             } else {
             const errorMessage = await response.text();
-            alert(`Failed to create event: ${errorMessage}`);
+                setToastVariant('danger');
+                setToastMessage(`Failed to create event: ${errorMessage}`);
+                setShowToast(true);
         }
     } catch (error) {
         console.error('Error creating event:', error);
@@ -63,61 +76,25 @@ const CreateEventPage = () => {
     }
     };
 
+
+
     return (
         <div className="container">
             <div className="d-flex justify-content-center">
                 <div>
+                    <CustomToast
+                        showToast={showToast}
+                        setShowToast={setShowToast}
+                        toastVariant={toastVariant}
+                        toastMessage={toastMessage}
+                    />
                     <h1>Create Event</h1>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label htmlFor="eventName" className="form-label">User Id</label>
-                            <input type="text" className="form-control input-box" id="userId" name="userId"
-                                   value={event.userId}
-                                   onChange={(e) => handleChange("userId", e.target.value)}/>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="eventName" className="form-label">Event Name</label>
-                            <input type="text" className="form-control input-box" id="eventName" name="eventName"
-                                   value={event.eventName}
-                                   onChange={(e) => handleChange("eventName", e.target.value)}/>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="eventType" className="form-label">Event Type</label>
-                            <input type="text" className="form-control input-box" id="eventType" name="eventType"
-                                   value={event.eventType}
-                                   onChange={(e) => handleChange("eventType", e.target.value)}/>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="eventDate" className="form-label">Event Date</label>
-                            <input type="date" className="form-control input-box" id="eventDate" name="eventDate"
-                                   value={event.eventDate}
-                                   onChange={(e) => handleChange("eventDate", e.target.value)}/>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="eventTime" className="form-label">Event Start Time</label>
-                            <input type="time" className="form-control input-box" id="eventStartTime"
-                                   name="eventStartTime"
-                                   value={event.eventStartTime}
-                                   onChange={(e) => handleChange("eventStartTime", e.target.value)}/>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="eventTime" className="form-label">Event End Time</label>
-                            <input type="time" className="form-control input-box" id="eventEndTime" name="eventEndTime"
-                                   value={event.eventEndTime}
-                                   onChange={(e) => handleChange("eventEndTime", e.target.value)}/>
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="eventDescription" className="form-label">Event Description</label>
-                            <textarea className="form-control input-description" id="eventDescription"
-                                      name="eventDescription"
-                                      value={event.eventDescription}
-                                      onChange={(e) => handleChange("eventDescription", e.target.value)}/>
-                        </div>
-                        <div className="text-center mt-3">
-                            <Button variant="primary" onClick={() => navigate('/venue-booking')}>Select Venue</Button>
-                        </div>
-                    </form>
+                    <EventForm
+                        event={event}
+                        handleChange={handleChange}
+                        handleSubmit={handleSubmit}
+                        buttonText="Create Event"
+                    />
                 </div>
             </div>
         </div>

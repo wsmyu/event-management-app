@@ -129,11 +129,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEvent(Long eventId) {
         //Add validate user later
-
+        try{
         Event event = retrieveEventDetails(eventId);
         if (event == null) {
             throw new EventNotFoundException("Event with ID " + eventId + " not found");
         }
+
         // Delete associated booking
         Booking booking = bookingService.retrieveBookingByEventId(eventId);
 
@@ -142,7 +143,9 @@ public class EventServiceImpl implements EventService {
         }
 
         eventJPAService.deleteEventById(eventId);
+    }catch (Exception e) {
+            System.out.println("Error deleting event with ID " + eventId);
+            e.printStackTrace();
+        }
     }
-
-
 }

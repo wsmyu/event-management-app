@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
+import { useParams } from 'react-router-dom';
 const EventDetailPage = () => {
+    const { eventId } = useParams();
     const [event, setEvent] = useState({
         eventId: '',
         userId: '',
@@ -12,8 +13,8 @@ const EventDetailPage = () => {
     });
 
     const fetchEvent = async () => {
-        //testing to fetch the detail of event with id=3
-        await fetch('http://localhost:8080/api/events/3')
+        //testing to fetch the detail of event with id=6
+        await fetch(`http://localhost:8080/api/events/${eventId}`)
             .then((response) => response.json())
             .then((data)=>setEvent(data))
             .catch((error)=>console.error('Error fetching events:', error))
