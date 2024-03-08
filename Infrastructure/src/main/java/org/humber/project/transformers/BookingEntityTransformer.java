@@ -5,6 +5,9 @@ import org.humber.project.entities.BookingEntity;
 
 public class BookingEntityTransformer {
     public static Booking transformToBooking(BookingEntity bookingEntity) {
+        if (bookingEntity == null) {
+            return null;
+        }
         Booking booking = new Booking();
         booking.setBookingId(bookingEntity.getBookingId());
         booking.setEventId(bookingEntity.getEventId());

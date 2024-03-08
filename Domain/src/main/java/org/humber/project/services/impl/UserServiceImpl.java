@@ -1,8 +1,6 @@
 package org.humber.project.services.impl;
 
-import org.humber.project.domain.Event;
 import org.humber.project.domain.User;
-import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.services.UserJPAService;
 import org.humber.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +42,4 @@ public class UserServiceImpl implements UserService {
 
         return users;
     }
-
 }

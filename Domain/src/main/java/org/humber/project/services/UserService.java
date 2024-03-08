@@ -8,4 +8,5 @@ public interface UserService {
     User createUser(User user);
     User loginUser(String username, String password);
     List<User> searchByUsername(String username);
+
 }
