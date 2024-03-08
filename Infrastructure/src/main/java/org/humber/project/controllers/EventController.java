@@ -75,7 +75,7 @@ public class EventController {
         return ResponseEntity.ok(adjustedBudget);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<?> createEvent(@RequestBody Event event) {
         try {
             Event createdEvent = eventService.createEvent(event);
