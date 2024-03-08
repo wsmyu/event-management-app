@@ -19,8 +19,18 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public Budget createOrUpdateBudget(Budget budget) {
-        // Leverage BudgetJPAService for persistence operations
-        return budgetJPAService.saveBudget(budget);
+        Budget existingBudget = budgetJPAService.findBudgetByEventId(budget.getEventId());
+        if (existingBudget == null) {
+            // If there's no existing budget, create a new one.
+            return budgetJPAService.saveBudget(budget);
+        } else {
+            // If there's an existing budget, update it with new details.
+            existingBudget.setVenueCost(budget.getVenueCost());
+            existingBudget.setBeverageCostPerPerson(budget.getBeverageCostPerPerson());
+            existingBudget.setGuestNumber(budget.getGuestNumber());
+            existingBudget.setTotalBudget(budget.getTotalBudget());
+            return budgetJPAService.saveBudget(existingBudget);
+        }
     }
     public Budget adjustBudget(Budget budget) {
         return budgetJPAService.adjustBudget(budget);
