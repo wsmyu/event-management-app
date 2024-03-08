@@ -1,18 +1,14 @@
 package org.humber.project.services.impl;
 
 import org.humber.project.domain.Booking;
+import org.humber.project.domain.Budget;
 import org.humber.project.domain.Event;
-import org.humber.project.domain.VenueBookingRequest;
 import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.exceptions.EventValidationException;
-import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,14 +19,19 @@ public class EventServiceImpl implements EventService {
 
     private final BookingService bookingService;
     private final List<EventValidationService> eventValidationService;
+    private final BudgetService budgetService;
 
 
     @Autowired
-    public EventServiceImpl(EventJPAService eventJPAService, BookingService bookingService, List<EventValidationService> eventValidationService) {
+    public EventServiceImpl(EventJPAService eventJPAService, BookingService bookingService, List<EventValidationService> eventValidationService, BudgetService budgetService) {
         this.eventJPAService = eventJPAService;
         this.bookingService = bookingService;
         this.eventValidationService = eventValidationService;
+        this.budgetService = budgetService;
+
     }
+
+
 
     @Override
     public Event createEvent(Event event) {
@@ -40,8 +41,18 @@ public class EventServiceImpl implements EventService {
                 validationService.validateEvent(event);
             }
 
+
             // Save the event after confirming venue availability
             Event savedEvent = eventJPAService.saveEvent(event);
+            Budget budget = new Budget();
+            // assuming these details come from the event or elsewhere
+            budget.setEventId(event.getEventId()); // make sure eventId is set after saving the event
+            budget.setVenueCost(100.25); // example static values, replace with actual
+            budget.setBeverageCostPerPerson(15.0);
+            budget.setGuestNumber(100);
+            budget.setTotalBudget(budget.getVenueCost() + (budget.getBeverageCostPerPerson() * budget.getGuestNumber()));
+
+            budgetService.createOrUpdateBudget(budget);
             return savedEvent;
 
         } catch (EventValidationException e) {
@@ -139,4 +150,6 @@ public class EventServiceImpl implements EventService {
             e.printStackTrace();
         }
     }
+
+
 }

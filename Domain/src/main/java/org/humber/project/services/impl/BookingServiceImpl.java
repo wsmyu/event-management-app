@@ -1,7 +1,6 @@
 package org.humber.project.services.impl;
 
 import org.humber.project.domain.Booking;
-import org.humber.project.domain.Venue;
 import org.humber.project.domain.VenueBookingRequest;
 import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.services.BookingJPAService;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-
-import java.awt.print.Book;
 import java.time.LocalDate;
 import java.util.List;
 
