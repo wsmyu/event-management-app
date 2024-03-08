@@ -10,6 +10,8 @@ const EventDetailPage = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
+    const [budget, setBudget] = useState(null);
+
     const [event, setEvent] = useState({
         userId: '',
         eventName: '',
@@ -32,7 +34,7 @@ const EventDetailPage = () => {
         const minutes = timeArray[1].toString().padStart(2, '0'); // Ensure two digits for minutes
         return `${hours}:${minutes}`;
     }
-    const fetchEvent = async () => {
+    const fetchEventAndBudget = async () => {
         try {
             const response = await fetch(`http://localhost:8080/api/events/${eventId}`);
             if (response.ok) {
@@ -45,6 +47,14 @@ const EventDetailPage = () => {
             } else {
                 console.log(event);
                 console.error('Failed to fetch event details');
+            }
+            // Fetch budget details
+            const budgetResponse = await fetch(`http://localhost:8080/api/events/${eventId}/budget`);
+            if (budgetResponse.ok) {
+                const budgetData = await budgetResponse.json();
+                setBudget(budgetData);
+            } else {
+                console.error('Failed to fetch budget details');
             }
         } catch (error) {
             console.error('Error fetching event details:', error);
@@ -81,8 +91,8 @@ const EventDetailPage = () => {
     };
 
     useEffect(() => {
-        fetchEvent();
-    }, []);
+        fetchEventAndBudget();
+    }, [eventId]);
 
     return (
         <div className="container">
@@ -99,6 +109,17 @@ const EventDetailPage = () => {
                             <p className="card-text">Event Start Time: {event.eventStartTime}</p>
                             <p className="card-text">Event End Time: {event.eventEndTime}</p>
                             <p className="card-text">Event Description: {event.eventDescription}</p>
+                         {budget && (
+                                        <div className="card mt-3">
+                                            <div className="card-header">Budget Details</div>
+                                            <div className="card-body">
+                                                <p>Venue Cost: ${budget.venueCost}</p>
+                                                <p>Beverage Cost Per Person: ${budget.beverageCostPerPerson}</p>
+                                                <p>Guest Number: {budget.guestNumber}</p>
+                                                <p>Total Budget: ${budget.totalBudget}</p>
+                                            </div>
+                                        </div>
+                                    )}
                         </div>
 
                         <div className="text-center m-3">
@@ -107,6 +128,8 @@ const EventDetailPage = () => {
                             <Button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
                                 Delete Event
                             </Button>
+                            <Button variant="secondary" onClick={() => navigate(`/event/${eventId}/budget-management`)}>Manage Budget</Button>
+
                         </div>
                     </div>
                     {/*Success Toast */}

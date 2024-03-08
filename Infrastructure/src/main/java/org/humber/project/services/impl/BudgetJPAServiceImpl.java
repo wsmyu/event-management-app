@@ -1,12 +1,12 @@
 package org.humber.project.services.impl;
 
 import org.humber.project.domain.Budget;
+import org.humber.project.entities.BudgetEntity;
 import org.humber.project.repositories.BudgetJPARepository;
 import org.humber.project.services.BudgetJPAService;
+import org.humber.project.transformers.BudgetEntityTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.humber.project.entities.BudgetEntity;
-import org.humber.project.transformers.BudgetEntityTransformer;
 @Service
 public class BudgetJPAServiceImpl implements BudgetJPAService {
     private final BudgetJPARepository repository;
@@ -18,9 +18,9 @@ public class BudgetJPAServiceImpl implements BudgetJPAService {
 
     @Override
     public Budget findBudgetByEventId(Long eventId) {
-        BudgetEntity budgetEntity = repository.findByEventId(eventId)
-                .orElseThrow(() -> new RuntimeException("No budget found for event ID: " + eventId));
-        return BudgetEntityTransformer.transformToBudget(budgetEntity);
+        return repository.findByEventId(eventId)
+                .map(BudgetEntityTransformer::transformToBudget)
+                .orElse(null); // Return null if no budget is found
     }
 
     @Override
