@@ -35,17 +35,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event createEvent(Event event) {
         try {
-
             for (EventValidationService validationService : eventValidationService) {
                 // Perform validation using the current validation service
                 validationService.validateEvent(event);
-            }
-
-            // Validate that the event date is in the future
-            //Move the validationService later
-            LocalDate currentDate = LocalDate.now();
-            if (event.getEventDate() != null && event.getEventDate().isBefore(currentDate)) {
-                throw new IllegalArgumentException("Event date must be in the future");
             }
 
             // Save the event after confirming venue availability

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 const EventDetailPage = () => {
-    const { eventId } = useParams();
+    const {eventId} = useParams();
     const [event, setEvent] = useState({
-        userId:'',
+        userId: '',
         eventName: '',
         eventType: '',
         eventDate: '',
@@ -35,6 +35,7 @@ const EventDetailPage = () => {
                 eventData.eventEndTime = formatTime(eventData.eventEndTime);
                 setEvent(eventData);
             } else {
+                console.log(event);
                 console.error('Failed to fetch event details');
             }
         } catch (error) {
@@ -48,21 +49,29 @@ const EventDetailPage = () => {
 
     return (
         <div className="container">
-            <h1 className="mt-5">Event Detail</h1>
-            <div className="card mt-3">
-                <div className="card-body">
-                    <h5 className="card-title">Event ID: {event.eventId}</h5>
-                    <p className="card-text">User ID: {event.userId}</p>
-                    <p className="card-text">Event Name: {event.eventName}</p>
-                    <p className="card-text">Event Type: {event.eventType}</p>
-                    <p className="card-text">Event Date: {event.eventDate}</p>
-                    <p className="card-text">Event Start Time: {event.eventStartTime}</p>
-                    <p className="card-text">Event End Time: {event.eventEndTime}</p>
-                    <p className="card-text">Event Description: {event.eventDescription}</p>
+            {event && event.eventName != ""? (
+                <div>
+                    <h1 className="mt-5">Event Detail</h1>
+                    <div className="card mt-3">
+                        <div className="card-body">
+                            <h5 className="card-title">Event ID: {event.eventId}</h5>
+                            <p className="card-text">User ID: {event.userId}</p>
+                            <p className="card-text">Event Name: {event.eventName}</p>
+                            <p className="card-text">Event Type: {event.eventType}</p>
+                            <p className="card-text">Event Date: {event.eventDate}</p>
+                            <p className="card-text">Event Start Time: {event.eventStartTime}</p>
+                            <p className="card-text">Event End Time: {event.eventEndTime}</p>
+                            <p className="card-text">Event Description: {event.eventDescription}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div>
+                    <h1>Event Not Found</h1>
+                </div>
+            )}
         </div>
-    );
-};
+    )}
+
 
 export default EventDetailPage;

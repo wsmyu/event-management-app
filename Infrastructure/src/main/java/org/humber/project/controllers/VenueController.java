@@ -39,8 +39,6 @@ public class VenueController {
             // Retrieve the corresponding event
             Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
 
-
-
             //Create a new booking with new booking request
             Booking booking = bookingService.createBooking(bookingRequest);
 
