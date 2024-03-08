@@ -12,7 +12,7 @@ const CustomToast = ({ showToast, setShowToast, toastVariant, toastMessage }) =>
         <Toast
             show={showToast}
             onClose={() => setShowToast(false)}
-            delay={5000}
+            delay={3000}
             autohide
             className={`bg-${toastVariant}`}
         >

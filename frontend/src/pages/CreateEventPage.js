@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Toast } from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
+import {Toast} from 'react-bootstrap';
 import {Button} from "react-bootstrap";
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import EventForm from "../components/EventForm";
 import CustomToast from "../components/CustomToast";
+
 const CreateEventPage = () => {
     const [event, setEvent] = useState({
-        userId:'',
+        userId: '',
         eventName: '',
         eventType: '',
         eventDate: '',
@@ -52,10 +53,12 @@ const CreateEventPage = () => {
                 body: JSON.stringify(event)
             });
             if (response.ok) {
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
                 showSuccessMessage('Event created successfully!');
                 //Clear the form after submitting
                 setEvent({
-                    userId:'',
+                    userId: '',
                     eventName: '',
                     eventType: '',
                     eventDate: '',
@@ -65,17 +68,16 @@ const CreateEventPage = () => {
                     venueId: ''
                 });
             } else {
-            const errorMessage = await response.text();
+                const errorMessage = await response.text();
                 setToastVariant('danger');
                 setToastMessage(`Failed to create event: ${errorMessage}`);
                 setShowToast(true);
+            }
+        } catch (error) {
+            console.error('Error creating event:', error);
+            alert('Failed to create event');
         }
-    } catch (error) {
-        console.error('Error creating event:', error);
-        alert('Failed to create event');
-    }
     };
-
 
 
     return (
