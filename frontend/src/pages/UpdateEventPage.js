@@ -16,7 +16,7 @@ const UpdateEventPage = () => {
         eventDescription: '',
     });
     const navigate = useNavigate();
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     const [toastMessage, setToastMessage] = useState('');
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
@@ -58,6 +58,11 @@ const UpdateEventPage = () => {
         const minutes = timeArray[1].toString().padStart(2, '0'); // Ensure two digits for minutes
         return `${hours}:${minutes}`;
     }
+    const showSuccessMessage = (message) => {
+        setShowToast(true);
+        setToastVariant('success');
+        setToastMessage(message);
+    };
     const handleChange = (name, value) => {
         setEvent(prevState => ({
             ...prevState,
@@ -75,46 +80,21 @@ const UpdateEventPage = () => {
                 body: JSON.stringify(event)
             });
             if (response.ok) {
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
                 showSuccessMessage('Event updated successfully!');
             } else {
                 const errorMessage = await response.text();
-                alert(`Failed to update event: ${errorMessage}`);
+                setToastVariant('danger');
+                setToastMessage(`Failed to update event: ${errorMessage}`);
+                setShowToast(true);
             }
         } catch (error) {
             console.error('Error updating event:', error);
         }
     };
 
-    const showSuccessMessage = (message) => {
-        setShowToast(true);
-        setToastVariant('success');
-        setToastMessage(message);
 
-        setTimeout(() => {
-            setShowToast(false);
-        }, 4000);
-    };
-    const handleDelete = async () => {
-        try {
-            setShowDeleteModal(false);
-            const response = await fetch(`http://localhost:8080/api/events/${eventId}/delete`, {
-                method: 'DELETE',
-            });
-            if (response.ok) {
-                showSuccessMessage('Event deleted successfully!');
-                // Delay navigation after showing the toast
-                setTimeout(() => {
-                    navigate('/');
-                }, 4000);
-
-            } else {
-                const errorMessage = await response.text();
-                alert(`Failed to delete event: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error('Error deleting event:', error);
-        }
-    };
 
     return (
         <div className="container">
@@ -123,6 +103,7 @@ const UpdateEventPage = () => {
                     <h1>Update Event</h1>
                     {event && (
                         <>
+                            {/* Success Toast */}
                             <CustomToast
                                 showToast={showToast}
                                 setShowToast={setShowToast}
@@ -135,24 +116,6 @@ const UpdateEventPage = () => {
                                 handleSubmit={handleSubmit}
                                 buttonText="Update Event"
                             />
-                            <div className="text-center mt-3">
-                                <button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
-                                    Delete Event
-                                </button>
-                            </div>
-                            {/* Delete Event Modal */}
-                            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Delete Event</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    Are you sure you want to delete this event?
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Close</Button>
-                                    <Button variant="danger" onClick={handleDelete}>Delete</Button>
-                                </Modal.Footer>
-                            </Modal>
                         </>
                     )}
                 </div>

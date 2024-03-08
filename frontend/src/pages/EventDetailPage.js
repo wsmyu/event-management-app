@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
+import {Button} from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import CustomToast from "../components/CustomToast";
 const EventDetailPage = () => {
     const {eventId} = useParams();
+    const navigate = useNavigate();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastVariant, setToastVariant] = useState('success');
+    const [showToast, setShowToast] = useState(false);
     const [event, setEvent] = useState({
         userId: '',
         eventName: '',
@@ -43,6 +51,35 @@ const EventDetailPage = () => {
         }
     };
 
+    const showSuccessMessage = (message) => {
+        setShowToast(true);
+        setToastVariant('success');
+        setToastMessage(message);
+    };
+    const handleDelete = async () => {
+        try {
+            setShowDeleteModal(false);
+            const response = await fetch(`http://localhost:8080/api/events/${eventId}/delete`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
+                showSuccessMessage('Event deleted successfully!');
+                // Delay navigation after showing the toast
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
+
+            } else {
+                const errorMessage = await response.text();
+                alert(`Failed to delete event: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
+    };
+
     useEffect(() => {
         fetchEvent();
     }, []);
@@ -63,7 +100,35 @@ const EventDetailPage = () => {
                             <p className="card-text">Event End Time: {event.eventEndTime}</p>
                             <p className="card-text">Event Description: {event.eventDescription}</p>
                         </div>
+
+                        <div className="text-center m-3">
+                            <Button variant="primary"
+                                    onClick={() => navigate(`/event/${eventId}/update`)}>Update Event</Button>
+                            <Button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+                                Delete Event
+                            </Button>
+                        </div>
                     </div>
+                    {/*Success Toast */}
+                    <CustomToast
+                        showToast={showToast}
+                        setShowToast={setShowToast}
+                        toastVariant={toastVariant}
+                        toastMessage={toastMessage}
+                    />
+                    {/* Delete Event Modal */}
+                    <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Delete Event</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            Are you sure you want to delete this event?
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Close</Button>
+                            <Button variant="danger" onClick={handleDelete}>Delete</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             ) : (
                 <div>

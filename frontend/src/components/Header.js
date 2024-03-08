@@ -7,11 +7,11 @@ function Header() {
     return (
         <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary mb-3" >
             <Container>
-                <Navbar.Brand href="#home">Event Management Application</Navbar.Brand>
+                <Navbar.Brand href="/">Event Management Application</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="#link">Create Event</Nav.Link>
+                        <Nav.Link href="/create-event">Create Event</Nav.Link>
                         <Nav.Link href="#link">Login</Nav.Link>
 
                     </Nav>
