@@ -1,22 +1,15 @@
 package org.humber.project.domain;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    private Long userId;
+@Builder
+public class UserLoginRequest {
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
 }

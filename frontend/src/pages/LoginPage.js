@@ -1,44 +1,49 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
-  const [credentials, setCredentials] = useState({
+const LoginPage = ({ onLogin }) => {
+  const navigate = useNavigate();
+
+  const [loginData, setLoginData] = useState({
     username: '',
     password: '',
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
+    setLoginData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
 
   const handleLogin = () => {
-    console.log('Logging in with credentials:', credentials);
-
-    // Add the fetch request to authenticate the user with the backend.
-    // Example using fetch:
-    fetch('http://localhost:8080/api/login', {
+    // Call the backend API to perform login
+    fetch('http://localhost:8080/api/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify(loginData),
     })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Login failed. Please check your credentials.');
+        if (response.ok) {
+          console.log('Login successful!');
+          // Assuming the response contains user information, you can parse it
+          return response.json();
+        } else {
+          console.error('Login failed:', response.statusText);
+          throw new Error('Login failed');
         }
-        return response.json();
       })
-      .then(data => {
-        console.log('Login successful. User data:', data);
-        // Redirect to the desired page or handle login success.
+      .then(user => {
+        // Notify the parent component of the logged-in user
+        onLogin(user);
+        // Redirect to the home page
+        navigate('/');
       })
       .catch(error => {
         console.error('Error during login:', error.message);
-        // Handle login errors.
       });
   };
 
@@ -46,9 +51,9 @@ const LoginPage = () => {
     <div>
       <h1>Login</h1>
       <label>Username:</label>
-      <input type="text" name="username" value={credentials.username} onChange={handleInputChange} />
+      <input type="text" name="username" value={loginData.username} onChange={handleInputChange} />
       <label>Password:</label>
-      <input type="password" name="password" value={credentials.password} onChange={handleInputChange} />
+      <input type="password" name="password" value={loginData.password} onChange={handleInputChange} />
 
       <button onClick={handleLogin}>Login</button>
     </div>

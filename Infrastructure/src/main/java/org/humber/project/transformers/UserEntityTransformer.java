@@ -4,6 +4,7 @@ import org.humber.project.domain.User;
 import org.humber.project.entities.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserEntityTransformer {
@@ -15,7 +16,6 @@ public class UserEntityTransformer {
         user.setFirstName(userEntity.getFirstName());
         user.setLastName(userEntity.getLastName());
         user.setEmail(userEntity.getEmail());
-        // Add other fields as needed
         return user;
     }
 
@@ -27,7 +27,6 @@ public class UserEntityTransformer {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setEmail(user.getEmail());
-        // Add other fields as needed
         return userEntity;
     }
 

@@ -10,14 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.humber.project.transformers.FriendEntityTransformer.transformToFriend;
-import static org.humber.project.transformers.FriendEntityTransformer.transformToFriends;
-import static org.humber.project.transformers.FriendEntityTransformer.transformToFriendEntity;
 
 @Service
 public class FriendJPAServiceImpl implements FriendJPAService {
+
     private final FriendJPARepository friendJPARepository;
 
     @Autowired
@@ -27,19 +23,21 @@ public class FriendJPAServiceImpl implements FriendJPAService {
 
     @Override
     public Friend addFriend(Friend friend) {
-        FriendEntity friendEntity = transformToFriendEntity(friend);
+        FriendEntity friendEntity = FriendEntityTransformer.transformToFriendEntity(friend);
         FriendEntity savedEntity = friendJPARepository.save(friendEntity);
-        return transformToFriend(savedEntity);
+        return FriendEntityTransformer.transformToFriend(savedEntity);
     }
 
     @Override
     public void deleteFriend(Long friendId) {
-        friendJPARepository.findById(friendId).ifPresent(friendJPARepository::delete);
+        Optional<FriendEntity> friendEntityOptional = friendJPARepository.findById(friendId);
+        friendEntityOptional.ifPresent(friendJPARepository::delete);
+        // Add handling for the case when friendEntity is not present
     }
 
     @Override
     public List<Friend> getAllFriends() {
         List<FriendEntity> friendEntities = friendJPARepository.findAll();
-        return transformToFriends(friendEntities);
+        return FriendEntityTransformer.transformToFriends(friendEntities);
     }
 }

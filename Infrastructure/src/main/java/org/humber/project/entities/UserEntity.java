@@ -28,8 +28,6 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "friendUserId", cascade = CascadeType.ALL)
-    private List<FriendEntity> friends;
 }
 
 

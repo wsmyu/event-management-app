@@ -12,5 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Friend {
     private Long friendId;
+    private Long userId;
     private Long friendUserId;
+
+    public void setFriendUserId(Long friendUserId) {
+        this.friendUserId = friendUserId;
+    }
 }

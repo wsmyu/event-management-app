@@ -39,4 +39,15 @@ public class UserJPAServiceImpl implements UserJPAService {
         Optional<UserEntity> userEntityOptional = userJPARepository.findById(userId);
         return userEntityOptional.map(UserEntityTransformer::transformToUser).orElse(null);
     }
+
+    @Override
+    public User getUserByUsername(String username) {
+        Optional<UserEntity> userEntityOptional = userJPARepository.findByUsername(username);
+        return userEntityOptional.map(UserEntityTransformer::transformToUser).orElse(null);
+    }
+
+    public List<User> searchByUsername(String username) {
+        List<UserEntity> userEntities = userJPARepository.findByUsernameContaining(username);
+        return UserEntityTransformer.transformToUsers(userEntities);
+    }
 }

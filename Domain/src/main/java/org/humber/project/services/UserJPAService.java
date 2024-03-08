@@ -7,10 +7,12 @@ import java.util.List;
 public interface UserJPAService{
     User getUserById(Long userId);
 
-
     List<User> getAllUsers();
 
     User createUser(User user);
 
+    User getUserByUsername(String username);
+
+    List<User> searchByUsername(String username);
 
 }
