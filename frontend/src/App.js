@@ -11,7 +11,7 @@ import VenueBookingPage from "./pages/VenueBookingPage";
 import UpdateEventPage from "./pages/UpdateEventPage";
 import HomePage from "./pages/HomePage";
 import FriendsPage from "./pages/FriendsPage";
-import SuccessPage from "./pages/SuccessPage";
+
 
 function App() {
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -38,8 +38,6 @@ function App() {
                     <Route path="/venue-booking/:eventId" element={<VenueBookingPage />} />
                     <Route path="/event/:eventId/budget-management" element={<BudgetManagementPage />} />
                     <Route path="/user/:id/friends" element={<FriendsPage loggedInUser={loggedInUser} />} />
-                    <Route path="/create-event-successful" element={<SuccessPage />} />
-                    <Route path="/venue-booking-successful" element={<SuccessPage />} />
                 </Routes>
             </div>
 
