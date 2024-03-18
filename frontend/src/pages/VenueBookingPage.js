@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button} from 'react-bootstrap';
 import {useNavigate, useParams} from "react-router-dom";
-import {Dropdown} from 'primereact/dropdown';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import CustomToast from "../components/CustomToast";
@@ -21,9 +19,6 @@ const VenueBookingPage = () => {
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
     const [showSuccessPage,setShowSuccessPage]=useState(false);
-    const navigate = useNavigate();
-
-
 
     const showSuccessMessage = (message) => {
         setShowToast(true);
@@ -64,7 +59,7 @@ const VenueBookingPage = () => {
                 userId: userId
             };
 
-            const response = await fetch(`http://localhost:8080/api/venues/${selectedVenue.venueId}/book`, {
+            const response = await fetch(`http://localhost:8080/api/bookings/${selectedVenue.venueId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

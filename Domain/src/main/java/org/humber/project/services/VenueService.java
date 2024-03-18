@@ -9,10 +9,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface VenueService {
-    boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest);
-
-//    Booking bookVenue(VenueBookingRequest request) throws Exception;
-
     Venue getVenueById(Long venueId);
     List<Venue> getAllVenues();
 
