@@ -22,6 +22,19 @@ public class EventController {
         this.eventService = eventService;
         this.budgetService = budgetService;
     }
+
+    @PostMapping("")
+    public ResponseEntity<?> createEvent(@RequestBody Event event) {
+        try {
+            Event createdEvent = eventService.createEvent(event);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        } catch (EventValidationException e) {
+            // If event validation fails, return a 400 Bad Request response with an error message
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
+        }
+    }
     @PostMapping("/{eventId}/budget")
     public ResponseEntity<?> createOrUpdateBudget(@PathVariable Long eventId, @RequestBody Budget budget) {
         try {
@@ -75,18 +88,7 @@ public class EventController {
         return ResponseEntity.ok(adjustedBudget);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> createEvent(@RequestBody Event event) {
-        try {
-            Event createdEvent = eventService.createEvent(event);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
-        } catch (EventValidationException e) {
-            // If event validation fails, return a 400 Bad Request response with an error message
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
-        }
-    }
+
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable Long eventId) {
         Event event = eventService.retrieveEventDetails(eventId);

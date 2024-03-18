@@ -2,10 +2,9 @@ package org.humber.project.services.impl;
 
 import org.humber.project.domain.Booking;
 import org.humber.project.domain.VenueBookingRequest;
+import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.exceptions.VenueNotAvailableException;
-import org.humber.project.services.BookingJPAService;
-import org.humber.project.services.BookingService;
-import org.humber.project.services.VenueService;
+import org.humber.project.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,13 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
     private final BookingJPAService bookingJPAService;
     private final VenueService venueService;
+    private final List<BookingValidationService> bookingValidationService;
 
     @Autowired
-    public BookingServiceImpl(BookingJPAService bookingJPAService, @Lazy VenueService venueService) {
+    public BookingServiceImpl(BookingJPAService bookingJPAService, @Lazy VenueService venueService, List<BookingValidationService> bookingValidationService) {
         this.bookingJPAService = bookingJPAService;
         this.venueService = venueService;
+        this.bookingValidationService = bookingValidationService;
     }
 
     @Override
@@ -31,9 +32,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking (VenueBookingRequest bookingRequest){
-
+        for (BookingValidationService validationService : bookingValidationService) {
+            // Perform validation using the current validation service
+            validationService.validateBooking(bookingRequest);
+        }
         if (!venueService.checkVenueAvailability(bookingRequest)) {
-            throw new VenueNotAvailableException("Venue is not available at the requested date and time");
+            throw new VenueNotAvailableException(ErrorCode.VENUE_NOT_AVAILABLE);
         }
         // Create a new Booking entity with the booking details
         Booking booking = new Booking();
@@ -57,8 +61,4 @@ public class BookingServiceImpl implements BookingService {
         return bookingJPAService.getBookingByEventId(eventId);
     }
 
-    @Override
-    public Booking updateBooking(Booking booking){
-        return bookingJPAService.updateBooking(booking);
-    }
-}
+   }

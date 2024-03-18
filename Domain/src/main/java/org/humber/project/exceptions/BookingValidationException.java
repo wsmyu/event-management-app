@@ -1,9 +1,9 @@
 package org.humber.project.exceptions;
 
-public class VenueNotAvailableException extends RuntimeException{
+public class BookingValidationException extends RuntimeException {
     private final ErrorCode errorCode;
 
-    public VenueNotAvailableException(ErrorCode errorCode) {
+    public BookingValidationException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }

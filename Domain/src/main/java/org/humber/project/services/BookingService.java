@@ -10,6 +10,6 @@ public interface BookingService {
     Booking createBooking(VenueBookingRequest bookingRequest);
     Booking retrieveBookingByEventId(Long eventId);
     void deleteBookingById(Long bookingId);
-    Booking updateBooking(Booking booking);
+
 
 }

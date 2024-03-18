@@ -17,6 +17,8 @@ public class VenueEntityTransformer {
         venueEntity.setAddress(venueEntity.getAddress());
         venueEntity.setCapacity(venue.getCapacity());
         venueEntity.setDescription(venue.getDescription());
+        venueEntity.setImageUrl(venue.getImageUrl());
+        venueEntity.setRating(venue.getRating());
         return venueEntity;
     }
 
@@ -29,6 +31,8 @@ public class VenueEntityTransformer {
                 .country(venueEntity.getCountry())
                 .address(venueEntity.getAddress())
                 .description(venueEntity.getDescription())
+                .imageUrl(venueEntity.getImageUrl())
+                .rating(venueEntity.getRating())
                 .build();
     }
 

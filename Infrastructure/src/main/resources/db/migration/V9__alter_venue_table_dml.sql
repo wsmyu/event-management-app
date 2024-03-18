@@ -1,0 +1,3 @@
+ALTER TABLE venues
+ADD COLUMN image_url VARCHAR(255),
+ADD COLUMN rating DECIMAL(3,2);
