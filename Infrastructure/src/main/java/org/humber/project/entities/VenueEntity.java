@@ -32,5 +32,11 @@ public class VenueEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "rating")
+    private double rating;
 }
 

@@ -34,73 +34,6 @@ public class VenueJPAServiceImpl implements VenueJPAService {
     }
 
 
-//    @Override
-//    public Booking bookVenue(VenueBookingRequest bookingRequest) {
-//
-//        // Check venue availability
-//        VenueEntity venue = venueJPARepository.findById(bookingRequest.getVenueId())
-//                .orElseThrow(() -> new VenueNotFoundException("Venue not found"));
-//
-//        // Check if the venue is available for the specified date and time
-//        if (!isVenueAvailable(bookingRequest)) {
-//                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
-//            }
-//
-////        // Create a new Booking entity with the booking details
-////        Booking booking = new Booking();
-////        booking.setVenueId(venue.getVenueId());
-////        booking.setUserId(bookingRequest.getUserId());
-////        booking.setEventId(bookingRequest.getEventId());
-////        booking.setBookingDate(bookingRequest.getBookingDate());
-////        booking.setBookingStartTime(bookingRequest.getBookingStartTime());
-////        booking.setBookingEndTime(bookingRequest.getBookingEndTime());
-////        booking.setBookingCreationDate(LocalDate.now());
-//
-//        // Update the corresponding Event entity with the booked venue's ID
-//
-////        Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
-////        event.setVenueId(venue.getVenueId());
-////        EventEntity eventEntity = EventEntityTransformer.transformToEventEntity(event);
-////        eventJPARepository.save(eventEntity);
-//
-//        // Create the booking entity and save to the database
-//        return bookingService.createBooking(booking);
-//
-//    }
-//    @Override
-//    public Booking bookVenue(VenueBookingRequest bookingRequest) {
-//
-//        // Check venue availability
-//        VenueEntity venue = venueJPARepository.findById(bookingRequest.getVenueId())
-//                .orElseThrow(() -> new VenueNotFoundException("Venue not found"));
-//
-//        // Check if the venue is available for the specified date and time
-//        if (!isVenueAvailable(bookingRequest)) {
-//                throw new VenueNotAvailableException("Venue is not available at the requested date and time");
-//            }
-//
-////        // Create a new Booking entity with the booking details
-////        Booking booking = new Booking();
-////        booking.setVenueId(venue.getVenueId());
-////        booking.setUserId(bookingRequest.getUserId());
-////        booking.setEventId(bookingRequest.getEventId());
-////        booking.setBookingDate(bookingRequest.getBookingDate());
-////        booking.setBookingStartTime(bookingRequest.getBookingStartTime());
-////        booking.setBookingEndTime(bookingRequest.getBookingEndTime());
-////        booking.setBookingCreationDate(LocalDate.now());
-//
-//        // Update the corresponding Event entity with the booked venue's ID
-//
-////        Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
-////        event.setVenueId(venue.getVenueId());
-////        EventEntity eventEntity = EventEntityTransformer.transformToEventEntity(event);
-////        eventJPARepository.save(eventEntity);
-//
-//        // Create the booking entity and save to the database
-//        return bookingService.createBooking(booking);
-//
-//    }
-
     @Override
     public Venue getVenueById(Long venueId) {
         return venueJPARepository.findById(venueId)
@@ -117,6 +50,7 @@ public class VenueJPAServiceImpl implements VenueJPAService {
 
     @Override
     public boolean isVenueAvailable(VenueBookingRequest venueBookingRequest) {
+
         // Retrieve existing bookings for the venue on the given date
         List<Booking> bookingsForDate = bookingService.retrieveVenueBookings(venueBookingRequest.getVenueId()).stream()
                 .filter(booking -> {
@@ -136,13 +70,18 @@ public class VenueJPAServiceImpl implements VenueJPAService {
 
         boolean isAvailable = bookingsForDate.stream().noneMatch(booking -> {
             Event event = eventService.retrieveEventDetails(booking.getEventId());
-            LocalTime eventStartTime = event.getEventStartTime();
-            LocalTime eventEndTime = event.getEventEndTime();
+            LocalTime existingBookingStartTime = booking.getBookingStartTime();
+            LocalTime existingBookingEndTime = booking.getBookingEndTime();
 
-            return (bookingStartTime.isBefore(eventEndTime) && bookingEndTime.isAfter(eventStartTime)) ||
-                    (eventStartTime.isBefore(bookingEndTime) && eventEndTime.isAfter(bookingStartTime));
+            // Exclude the booking from the current event from the conflict check
+            if (event.getEventId().equals(venueBookingRequest.getEventId())) {
+                return false; // Skip this booking
+            }
+
+            return (bookingStartTime.isBefore(existingBookingEndTime) && bookingEndTime.isAfter(existingBookingStartTime)) ;
+//
         });
+
         return isAvailable;
     }
-
 }

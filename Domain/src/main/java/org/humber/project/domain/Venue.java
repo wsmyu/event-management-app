@@ -22,5 +22,7 @@ public class Venue {
     private String address;
     private String description;
     private int capacity;
+    private String imageUrl;
+    private double rating;
 
 }

@@ -13,7 +13,7 @@ public interface VenueService {
 
 //    Booking bookVenue(VenueBookingRequest request) throws Exception;
 
-    Venue getVenue(Long venueId);
+    Venue getVenueById(Long venueId);
     List<Venue> getAllVenues();
 
 }

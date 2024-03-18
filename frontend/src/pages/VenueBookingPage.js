@@ -1,56 +1,218 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button } from 'react-bootstrap';
-import {useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import {Button} from 'react-bootstrap';
+import {useNavigate, useParams} from "react-router-dom";
+import {Dropdown} from 'primereact/dropdown';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import CustomToast from "../components/CustomToast";
+import SuccessPage from "./SuccessPage";
 
-const VenueBookingPage = ({ onSelectVenue }) => {
+
+const VenueBookingPage = () => {
+    const {eventId} = useParams();
     const [venues, setVenues] = useState([]);
+    const [selectedVenue, setSelectedVenue] = useState(null);
+    const [showBookingForm, setShowBookingForm] = useState(false);
+    const [bookingDate, setBookingDate] = useState('');
+    const [bookingStartTime, setBookingStartTime] = useState('');
+    const [bookingEndTime, setBookingEndTime] = useState('');
+    const [userId, setUserId] = useState('');
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastVariant, setToastVariant] = useState('success');
+    const [showToast, setShowToast] = useState(false);
+    const [showSuccessPage,setShowSuccessPage]=useState(false);
     const navigate = useNavigate();
-    useEffect(() => {
-        fetchVenues();
-    }, []);
 
-    const fetchVenues = async () => {
+
+
+    const showSuccessMessage = (message) => {
+        setShowToast(true);
+        setToastVariant('success');
+        setToastMessage(message);
+
+        // Hide the toast after 5 seconds (5000 milliseconds)
+        setTimeout(() => {
+            setShowToast(false);
+        }, 4000);
+    };
+
+
+    const imageBodyTemplate = (rowData) => {
+        return <img src={rowData.imageUrl} alt={rowData.image} className="shadow-2 border-round"
+                    style={{width: '10rem'}}/>;
+    };
+
+    const addressBodyTemplate = (rowData) => {
+        return <span>{rowData.address}, {rowData.city}, {rowData.country}</span>
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/api/venues');
+            if (!selectedVenue) {
+                console.error('No selected venue');
+                return;
+            }
+
+            //Create a booking request
+            const bookingRequest = {
+                eventId: eventId,
+                venueId: selectedVenue.venueId,
+                bookingDate: bookingDate,
+                bookingStartTime: bookingStartTime,
+                bookingEndTime: bookingEndTime,
+                userId: userId
+            };
+
+            const response = await fetch(`http://localhost:8080/api/venues/${selectedVenue.venueId}/book`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingRequest)
+
+            });
             if (response.ok) {
-                const data = await response.json();
-                setVenues(data);
+                showSuccessMessage('Venue booked successfully!');
+                setTimeout(()=>{
+                    setShowSuccessPage(true);
+                },4000)
+                console.log("Venue booked successfully!");
             } else {
-                console.log('Failed to fetch venues');
+                const errorMessage = await response.text();
+                setToastVariant('danger');
+                setToastMessage(`Failed to book venue: ${errorMessage}`);
+                setShowToast(true);
+                console.error('Failed to book venue.', errorMessage);
             }
         } catch (error) {
-            console.error('Error fetching venues:', error);
+            console.error('Error booking venue:', error);
         }
     };
 
+    const handleNext = () => {
+        setShowBookingForm(true);
+    }
+
+    useEffect(() => {
+        const fetchVenues = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/venues');
+                if (response.ok) {
+                    const data = await response.json();
+                    setVenues(data);
+                } else {
+                    console.log('Failed to fetch venues');
+                }
+            } catch (error) {
+                console.error('Error fetching venues:', error);
+            }
+        };
+
+        const fetchEventUserId = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/events/${eventId}`);
+                if (response.ok) {
+                    const eventData = await response.json();
+                    setUserId(eventData.userId);
+                } else {
+                    console.error('Failed to fetch event details');
+                }
+            } catch (error) {
+                console.error('Error fetching user id:', error);
+            }
+        };
+        fetchVenues();
+        fetchEventUserId();
+    }, []);
+
     return (
         <div className="container">
-            <div className="row">
-                {venues.map(venue => (
-                    <div key={venue.venueId} className="col-md-4">
-                        <Card style={{ width: '18rem' }} className="mb-4">
-                            <Card.Body>
-                                <Card.Title>{venue.venueName}</Card.Title>
-                                <Card.Text>
-                                    {venue.address}
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => onSelectVenue(venue)}>Select</Button>
-                            </Card.Body>
-                        </Card>
+            <CustomToast
+                showToast={showToast}
+                setShowToast={setShowToast}
+                toastVariant={toastVariant}
+                toastMessage={toastMessage}
+            />
+
+            {!showBookingForm && !showSuccessPage && (
+                <div>
+                    <h1>Book Venue </h1>
+                    <div className="card">
+                        {/* Step 1: Select Venue */}
+                        <DataTable value={venues} selectionMode="single" selection={selectedVenue}
+                                   onSelectionChange={(e) => setSelectedVenue(e.value)} removableSort
+                                   tableStyle={{minWidth: '50rem'}}>
+                            <Column selectionMode="single" headerStyle={{width: '3rem'}}></Column>
+                            <Column field="venueName" header="Name" sortable style={{width: '25%'}}></Column>
+                            <Column field="image" header="Image" body={imageBodyTemplate}></Column>
+                            <Column field="description" header="Description" style={{width: '25%'}}></Column>
+                            <Column header="Address" body={addressBodyTemplate} style={{width: '25%'}}></Column>
+                            <Column field="capacity" header="Capacity" sortable style={{width: '25%'}}></Column>
+                            <Column field="rating" header="Rating" sortable style={{width: '25%'}}></Column>
+                        </DataTable>
+
                     </div>
+                    <div className="d-flex justify-content-center m-3">
+                        <button onClick={handleNext} className="btn btn-primary">Next</button>
+                    </div>
+                </div>
+            )}
 
-                ))}
-            </div>
-            <div className="d-flex justify-content-center">
-                <Button onClick={() => navigate('/create-event')} variant="secondary">Back to Event Creation</Button>
-            </div>
+            {/* Step 2: Booking Form */}
+            {showBookingForm && !showSuccessPage && (
+                <div>
+                    <h2>Booking Details</h2>
+                    <div className="container">
+                        <div className="d-flex justify-content-center">
+                            <form>
+                                <div className="mb-3">
+                                    <label htmlFor="bookingDate">Booking Date : </label>
+                                    <input type="date" id="bookingDate" value={bookingDate}
+                                           className="form-control"
+                                           onChange={(e) => setBookingDate(e.target.value)}
+                                           required/>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="bookingStartTime">Booking Start Time:</label>
+                                    <input
+                                        type="time"
+                                        id="bookingStartTime"
+                                        className="form-control"
+                                        value={bookingStartTime}
+                                        onChange={(e) => setBookingStartTime(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="bookingEndTime">Booking End Time:</label>
+                                    <input
+                                        type="time"
+                                        id="bookingEndTime"
+                                        className="form-control"
+                                        value={bookingEndTime}
+                                        onChange={(e) => setBookingEndTime(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div className="d-flex justify-content-center gap-2">
+                        <button onClick={()=>setShowBookingForm(false)} className="btn btn-secondary">Back</button>
+                        <button onClick={handleSubmit} className="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            )}
 
-
-
+            {/*Show success page*/}
+            {showSuccessPage && (
+               <SuccessPage eventId={eventId} message="Venue booked successfully" />
+            )}
         </div>
     );
-};
 
+};
 export default VenueBookingPage;
 
 

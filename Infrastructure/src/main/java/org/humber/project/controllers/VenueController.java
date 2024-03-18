@@ -4,6 +4,7 @@ import org.humber.project.domain.Booking;
 import org.humber.project.domain.Event;
 import org.humber.project.domain.Venue;
 import org.humber.project.domain.VenueBookingRequest;
+import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.exceptions.VenueNotFoundException;
 import org.humber.project.services.BookingService;
@@ -33,22 +34,33 @@ public class VenueController {
         List<Venue> venues = venueService.getAllVenues();
         return ResponseEntity.ok(venues);
     }
+
+    @GetMapping("/{venueId}")
+    public ResponseEntity<Venue> getVenueById(@PathVariable("venueId") Long venueId) {
+        Venue venue = venueService.getVenueById(venueId);
+        return ResponseEntity.ok(venue);
+    }
+
     @PostMapping("/{id}/book")
     public ResponseEntity<?> bookVenue(@PathVariable("id") Long venueId, @RequestBody VenueBookingRequest bookingRequest) {
         try {
             // Retrieve the corresponding event
             Event event = eventService.retrieveEventDetails(bookingRequest.getEventId());
 
-            //Create a new booking with new booking request
-            Booking booking = bookingService.createBooking(bookingRequest);
+            if (!venueService.checkVenueAvailability(bookingRequest)) {
+                throw new VenueNotAvailableException(ErrorCode.VENUE_NOT_AVAILABLE);
+            }
 
             //Check if the event has existing venue booking
             //If there is existing venue booking, delete the old booking
-            if(booking!= null && event.getVenueId() != null){
+            if (event.getVenueId() != null) {
                 Booking existingBooking = bookingService.retrieveBookingByEventId(event.getEventId());
                 // Delete the old booking
                 bookingService.deleteBookingById(existingBooking.getBookingId());
             }
+
+            //Create a new booking with new booking request
+            Booking booking = bookingService.createBooking(bookingRequest);
 
             // Update the venue id of the event
             eventService.updateEventVenue(event.getEventId(), venueId);

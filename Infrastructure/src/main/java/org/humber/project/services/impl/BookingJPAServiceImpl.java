@@ -3,6 +3,7 @@ package org.humber.project.services.impl;
 import org.humber.project.domain.Booking;
 import org.humber.project.entities.BookingEntity;
 import org.humber.project.exceptions.BookingNotFoundException;
+import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.repositories.BookingJPARepository;
 import org.humber.project.services.BookingJPAService;
 import org.humber.project.transformers.BookingEntityTransformer;
@@ -54,7 +55,7 @@ public class BookingJPAServiceImpl implements BookingJPAService {
     public Booking updateBooking(Booking booking) {
         // Retrieve the existing booking entity
         BookingEntity existingBookingEntity = bookingJPARepository.findById(booking.getBookingId())
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found with ID: " + booking.getBookingId()));
+                .orElseThrow(() -> new BookingNotFoundException(ErrorCode.BOOKING_NOT_FOUND));
 
         // Check if the provided event ID matches the existing event ID
         // This is to ensure that the booking is associated with the correct event
