@@ -50,16 +50,15 @@ public class BookingController {
                 throw new VenueNotAvailableException(ErrorCode.VENUE_NOT_AVAILABLE);
             }
 
+            Booking booking;
             //Check if the event has existing venue booking
             //If there is existing venue booking, delete the old booking
-            if (event.getVenueId() != null ) {
-                Booking existingBooking = bookingService.retrieveBookingByEventId(event.getEventId());
-                // Delete the old booking
-                bookingService.deleteBookingById(existingBooking.getBookingId());
+            if (event.getVenueId() != null) {
+                booking = bookingService.updateBooking(bookingRequest);
+            } else {
+                //Create a new booking with new booking request
+                booking = bookingService.createBooking(bookingRequest);
             }
-            //Create a new booking with new booking request
-            Booking booking = bookingService.createBooking(bookingRequest);
-
             // Update the venue id of the event
             eventService.updateEventVenue(event.getEventId(), venueId);
 

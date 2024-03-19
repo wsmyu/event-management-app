@@ -11,5 +11,5 @@ public interface BookingService {
     Booking retrieveBookingByEventId(Long eventId);
     void deleteBookingById(Long bookingId);
     boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest);
-
+    Booking updateBooking(VenueBookingRequest bookingRequest);
 }
