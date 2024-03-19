@@ -10,4 +10,5 @@ public interface BookingJPAService {
     void deleteById(Long bookingId);
 
 
+
 }

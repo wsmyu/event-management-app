@@ -3,6 +3,7 @@ package org.humber.project.services.impl;
 import org.humber.project.domain.Booking;
 import org.humber.project.domain.Event;
 import org.humber.project.domain.VenueBookingRequest;
+import org.humber.project.exceptions.BookingNotFoundException;
 import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.exceptions.VenueNotAvailableException;
 import org.humber.project.services.*;
@@ -100,4 +101,32 @@ public class BookingServiceImpl implements BookingService {
 
         return isAvailable;
     }
+
+    @Override
+    public Booking updateBooking(VenueBookingRequest bookingRequest) {
+        for (BookingValidationService validationService : bookingValidationService) {
+            // Perform validation using the current validation service
+            validationService.validateBooking(bookingRequest);
+        }
+        if (!checkVenueAvailability(bookingRequest)) {
+            throw new VenueNotAvailableException(ErrorCode.VENUE_NOT_AVAILABLE);
+        }
+
+        // Retrieve the existing booking entity by its ID
+        Booking existingBooking = bookingJPAService.getBookingByEventId(bookingRequest.getEventId());
+
+        // Update the properties of the existing booking entity with the new data
+        existingBooking.setVenueId(bookingRequest.getVenueId());
+        existingBooking.setUserId(bookingRequest.getUserId());
+        existingBooking.setEventId(bookingRequest.getEventId());
+        existingBooking.setBookingDate(bookingRequest.getBookingDate());
+        existingBooking.setBookingStartTime(bookingRequest.getBookingStartTime());
+        existingBooking.setBookingEndTime(bookingRequest.getBookingEndTime());
+
+        // Save the updated booking entity back to the database
+        return bookingJPAService.saveBooking(existingBooking);
+    }
+
+
+
 }
