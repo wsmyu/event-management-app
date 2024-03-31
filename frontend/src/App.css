@@ -20,3 +20,14 @@
   height:10rem;
   border-radius:1rem
 }
+
+.card-row{
+  display:flex;
+  align-items: center;
+  gap:0.5rem;
+}
+
+.custom-link{
+  text-decoration: none;
+  color:black;
+}

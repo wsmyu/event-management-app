@@ -1,7 +1,4 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Toast} from 'react-bootstrap';
-import ToastContainer from 'react-bootstrap/ToastContainer';
 import EventForm from "../components/EventForm";
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
@@ -58,7 +55,7 @@ const CreateEventPage = () => {
                 showSuccessMessage('Event created successfully!');
                 setTimeout(() => {
                         setShowSuccessPage(true)
-                    }, 4000
+                    }, 3000
                 )
             } else {
                 const errorMessage = await response.text();

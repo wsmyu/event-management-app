@@ -5,6 +5,7 @@ import CustomToast from "../components/CustomToast";
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {formatDate,formatTime} from "../utils";
 
 const EventDetailPage = () => {
     const {eventId} = useParams();
@@ -19,20 +20,6 @@ const EventDetailPage = () => {
     const [venueBooking, setVenueBooking] = useState('');
     const [loading, setLoading] = useState(true);
     const [venueBookingDateTimeMatch, setVenueBookingDateTimeMatch] = useState(true);
-    const formatDate = (dateArray) => {
-        const year = dateArray[0];
-        const month = dateArray[1].toString().padStart(2, '0');
-        const day = dateArray[2].toString().padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const formatTime = (timeArray) => {
-        // Extract hours and minutes from the time array
-        const hours = timeArray[0].toString().padStart(2, '0'); // Ensure two digits for hours
-        const minutes = timeArray[1].toString().padStart(2, '0'); // Ensure two digits for minutes
-        return `${hours}:${minutes}`;
-    }
-
 
     const showSuccessMessage = (message) => {
         setShowToast(true);

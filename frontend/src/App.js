@@ -11,6 +11,7 @@ import VenueBookingPage from "./pages/VenueBookingPage";
 import UpdateEventPage from "./pages/UpdateEventPage";
 import HomePage from "./pages/HomePage";
 import FriendsPage from "./pages/FriendsPage";
+import SearchResultPage from "./pages/SearchResultPage";
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/venue-booking/:eventId" element={<VenueBookingPage />} />
                     <Route path="/event/:eventId/budget-management" element={<BudgetManagementPage />} />
                     <Route path="/user/:id/friends" element={<FriendsPage loggedInUser={loggedInUser} />} />
+                    <Route path="/search" element={<SearchResultPage />} />
                 </Routes>
             </div>
 

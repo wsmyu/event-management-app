@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import {Form, Button} from 'react-bootstrap';
 import EventForm from "../components/EventForm";
-import Modal from 'react-bootstrap/Modal';
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
 

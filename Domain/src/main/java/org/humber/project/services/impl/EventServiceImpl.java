@@ -9,8 +9,12 @@ import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.exceptions.EventValidationException;
 import org.humber.project.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Year;
 import java.util.List;
 import java.util.Objects;
 
@@ -143,5 +147,75 @@ public class EventServiceImpl implements EventService {
             log.error("Error deleting event with ID {}", eventId);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Event> searchEvents(String eventName) {
+        return eventJPAService.findEventsByEventName(eventName);
+    }
+
+    @Override
+    public List<Event> filterEventsByType(String eventType) {
+        return eventJPAService.findEventsByEventType(eventType);
+    }
+
+    @Override
+    public List<Event> filterEventsByCity(String city) {
+        return eventJPAService.findEventsByCity(city);
+    }
+
+    @Override
+    public List<Event> filterEventsByDate(String timeFrame) {
+        LocalDate startDate;
+        LocalDate endDate;
+
+        switch (timeFrame) {
+            case "thisMonth":
+                startDate = LocalDate.now().withDayOfMonth(1);
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+                break;
+            case "nextMonth":
+                startDate = LocalDate.now().plusMonths(1).withDayOfMonth(1);
+                endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+                break;
+            case "thisYear":
+                Year currentYear = Year.now();
+                startDate = LocalDate.now();
+                endDate = currentYear.atDay(currentYear.length());
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid timeframe: " + timeFrame);
+        }
+        return eventJPAService.findEventsByDateRange(startDate, endDate);
+    }
+
+    @Override
+    public List<Event> searchEventsWithFilters(String eventName, String city, String eventType, String timeFrame) {
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+
+        // Determine start and end dates based on time frame filter
+        if (timeFrame != null && !timeFrame.isEmpty()) {
+            switch (timeFrame) {
+                case "thisMonth":
+                    startDate = LocalDate.now().withDayOfMonth(1);
+                    endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+                    break;
+                case "nextMonth":
+                    startDate = LocalDate.now().plusMonths(1).withDayOfMonth(1);
+                    endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+                    break;
+                case "thisYear":
+                    Year currentYear = Year.now();
+                    startDate = LocalDate.now();
+                    endDate = currentYear.atDay(currentYear.length());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid timeframe: " + timeFrame);
+            }
+        }
+        // Perform filtering based on the provided parameters
+        List<Event> filteredEvents = eventJPAService.findEventsByFilters(eventName, city, eventType, startDate,endDate);
+        return filteredEvents;
     }
 }

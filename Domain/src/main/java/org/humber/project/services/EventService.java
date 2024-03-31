@@ -11,4 +11,9 @@ public interface EventService {
     Event updateEventInfo(Long eventId,Event event);
     Event updateEventVenue(Long eventId, Long venueId);
     void deleteEvent(Long eventId);
+    List<Event> searchEvents(String eventName);
+    List<Event> filterEventsByType(String eventType);
+    List<Event> filterEventsByCity(String city);
+    List<Event> filterEventsByDate(String timeFrame);
+    List<Event> searchEventsWithFilters(String eventName, String city, String eventType, String timeFrame);
 }

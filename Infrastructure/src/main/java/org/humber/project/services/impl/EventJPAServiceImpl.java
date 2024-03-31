@@ -3,12 +3,13 @@ package org.humber.project.services.impl;
 import org.humber.project.domain.Event;
 import org.humber.project.entities.EventEntity;
 import org.humber.project.repositories.EventJPARepository;
-import org.humber.project.services.BookingService;
 import org.humber.project.services.EventJPAService;
 import org.humber.project.transformers.EventEntityTransformer;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventJPAServiceImpl implements EventJPAService {
@@ -33,12 +34,47 @@ public class EventJPAServiceImpl implements EventJPAService {
     }
 
     @Override
-    public List<Event> findEventsByUserId(Long userId){
+    public List<Event> findEventsByUserId(Long userId) {
         return null;
     }
 
     @Override
     public void deleteEventById(Long eventId) {
-         eventJPARepository.deleteById(eventId);
+        eventJPARepository.deleteById(eventId);
+    }
+
+    @Override
+    public List<Event> findEventsByEventName(String eventName) {
+        return Optional.of(eventJPARepository.findByEventNameContaining(eventName))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
+    }
+
+    @Override
+    public List<Event> findEventsByEventType(String eventType) {
+        return Optional.of(eventJPARepository.findByEventType(eventType))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
+    }
+
+    @Override
+    public List<Event> findEventsByCity(String city) {
+        return Optional.of(eventJPARepository.findByCity(city))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
+    }
+
+    @Override
+    public List<Event> findEventsByDateRange(LocalDate startDate, LocalDate endDate) {
+        return Optional.of(eventJPARepository.findByEventDateBetween(startDate, endDate))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
+    }
+
+    @Override
+    public List<Event> findEventsByFilters(String eventName, String city, String eventType,LocalDate startDate, LocalDate endDate) {
+        return Optional.of(eventJPARepository.findByFilters(eventName,city,eventType,startDate,endDate))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
     }
 }

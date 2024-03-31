@@ -3,6 +3,9 @@ package org.humber.project.transformers;
 import org.humber.project.domain.Event;
 import org.humber.project.entities.EventEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class EventEntityTransformer {
     public static EventEntity transformToEventEntity(Event event) {
         EventEntity eventEntity = new EventEntity();
@@ -30,5 +33,11 @@ public class EventEntityTransformer {
                 .eventEndTime(eventEntity.getEventEndTime())
                 .eventDescription(eventEntity.getEventDescription())
                 .build();
+    }
+
+    public static List<Event> transformToEvents(List<EventEntity> eventEntities) {
+        return eventEntities.stream()
+                .map(EventEntityTransformer::transformToEvent)
+                .collect(Collectors.toList());
     }
 }
