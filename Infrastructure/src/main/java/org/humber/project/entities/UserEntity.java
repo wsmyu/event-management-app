@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.humber.project.domain.Friend;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -25,6 +28,8 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FriendEntity> friends;
 }
 
 

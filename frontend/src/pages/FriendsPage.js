@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useUser } from '../components/UserContext';
 
-const FriendsPage = ({ loggedInUser }) => {
+const FriendsPage = () => {
+  const { loggedInUser } = useUser();
   const [searchUsername, setSearchUsername] = useState('');
   const [searchResult, setSearchResult] = useState(null);
 
@@ -28,34 +30,33 @@ const FriendsPage = ({ loggedInUser }) => {
   };
 
    const handleAddFriend = (userId) => {
-      // Implement the logic to add the user with userId to the friend list
-      console.log(`Adding user with ID ${userId} to friends.`);
+       // Implement the logic to add the user with userId to the friend list
+       console.log(`Adding user with ID ${userId} to friends.`);
 
-      // Make an API call to addFriend endpoint
-      fetch(`http://localhost:8080/api/users/${loggedInUser.userId}/friends/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${loggedInUser.token}`, // Include authentication token
-        },
-        body: JSON.stringify({
-          user_id: loggedInUser.userId, // Assuming the backend expects user_id
-          friend_user_id: userId,
-        }),
-      })
-        .then(response => {
-          if (response.ok) {
-            console.log('Friend added successfully.');
-            // You might want to update the UI or state to reflect the friend addition
-          } else {
-            console.error('Add friend failed:', response.statusText);
-            throw new Error('Add friend failed');
-          }
-        })
-        .catch(error => {
-          console.error('Error during add friend:', error.message);
-        });
-    };
+       // Make an API call to addFriend endpoint
+       fetch(`http://localhost:8080/api/users/${loggedInUser.userId}/friends/add`, {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+               'Authorization': `Bearer ${loggedInUser.token}`, // Include authentication token
+           },
+           body: JSON.stringify({
+               friendUserId: userId, // Pass the friendUserId in the request body
+           }),
+       })
+       .then(response => {
+           if (response.ok) {
+               console.log('Friend added successfully.');
+               // You might want to update the UI or state to reflect the friend addition
+           } else {
+               console.error('Add friend failed:', response.statusText);
+               throw new Error('Add friend failed');
+           }
+       })
+       .catch(error => {
+           console.error('Error during add friend:', error.message);
+       });
+   };
 
   return (
     <div>
