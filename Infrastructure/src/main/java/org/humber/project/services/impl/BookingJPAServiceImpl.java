@@ -3,6 +3,7 @@ package org.humber.project.services.impl;
 import org.humber.project.domain.Booking;
 import org.humber.project.entities.BookingEntity;
 import org.humber.project.exceptions.BookingNotFoundException;
+import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.repositories.BookingJPARepository;
 import org.humber.project.services.BookingJPAService;
 import org.humber.project.transformers.BookingEntityTransformer;
@@ -50,26 +51,5 @@ public class BookingJPAServiceImpl implements BookingJPAService {
         bookingJPARepository.deleteById(bookingId);
     }
 
-    @Override
-    public Booking updateBooking(Booking booking) {
-        // Retrieve the existing booking entity
-        BookingEntity existingBookingEntity = bookingJPARepository.findById(booking.getBookingId())
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found with ID: " + booking.getBookingId()));
 
-        // Check if the provided event ID matches the existing event ID
-        // This is to ensure that the booking is associated with the correct event
-        if (!existingBookingEntity.getEventId().equals(booking.getEventId())) {
-            throw new IllegalArgumentException("Cannot update booking with different event ID");
-        }
-
-        // Transform the Booking object to a BookingEntity
-        BookingEntity updatedBookingEntity = transformToBookingEntity(booking);
-
-        // Save the updated booking entity
-        updatedBookingEntity = bookingJPARepository.save(updatedBookingEntity);
-
-        // Transform the updated booking entity back to a Booking object and return
-        return transformToBooking(updatedBookingEntity);
-    }
 }
-

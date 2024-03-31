@@ -2,6 +2,7 @@
 import React from 'react';
 
 const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
+
     return (
         <form onSubmit={handleSubmit}>
                 <div className="mb-3">

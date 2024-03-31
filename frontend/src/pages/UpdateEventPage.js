@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {useParams,useNavigate} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {Form, Button} from 'react-bootstrap';
 import EventForm from "../components/EventForm";
 import Modal from 'react-bootstrap/Modal';
 import CustomToast from "../components/CustomToast";
+import SuccessPage from "./SuccessPage";
+
 const UpdateEventPage = () => {
     const {eventId} = useParams();
     const [event, setEvent] = useState({
-        userId:'',
+        userId: '',
         eventName: '',
         eventType: '',
         eventDate: '',
@@ -20,6 +22,7 @@ const UpdateEventPage = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
+    const [showSuccessPage, setShowSuccessPage] = useState(false);
 
     useEffect(() => {
         // Fetch event details from the backend when the component mounts
@@ -83,6 +86,7 @@ const UpdateEventPage = () => {
                 // Scroll to the top of the page
                 window.scrollTo(0, 0);
                 showSuccessMessage('Event updated successfully!');
+                setShowSuccessPage(true);
             } else {
                 const errorMessage = await response.text();
                 setToastVariant('danger');
@@ -95,14 +99,14 @@ const UpdateEventPage = () => {
     };
 
 
-
     return (
         <div className="container">
             <div className="d-flex justify-content-center">
                 <div>
-                    <h1>Update Event</h1>
-                    {event && (
+                    {event && !showSuccessPage && (
                         <>
+                            <h1>Update Event</h1>
+
                             {/* Success Toast */}
                             <CustomToast
                                 showToast={showToast}
@@ -119,6 +123,9 @@ const UpdateEventPage = () => {
                         </>
                     )}
                 </div>
+                {showSuccessPage && (
+                    <SuccessPage eventId={eventId} message="Event updated successfully"/>
+                )}
 
             </div>
         </div>

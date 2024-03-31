@@ -19,18 +19,19 @@ public class VenueServiceImpl implements VenueService {
     public VenueServiceImpl(VenueJPAService venueJPAService) {
         this.venueJPAService = venueJPAService;
     }
+
     @Override
-    public Venue getVenue(Long venueId){
+    public Venue getVenueById(Long venueId) {
         return venueJPAService.getVenueById(venueId);
     }
 
     @Override
-    public List<Venue> getAllVenues(){
+    public List<Venue> getAllVenues() {
         return venueJPAService.getAllVenues();
     }
 
-    @Override
-    public boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest){
-        return venueJPAService.isVenueAvailable(venueBookingRequest);
-    }
+//    @Override
+//    public boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest) {
+//        return venueJPAService.isVenueAvailable(venueBookingRequest);
+//    }
 }

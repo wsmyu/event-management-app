@@ -1,12 +1,17 @@
 package org.humber.project.exceptions;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 
 public class EventValidationException extends RuntimeException {
 
-    public EventValidationException(String message) {
-        super(message);
+    private final ErrorCode errorCode;
+
+    public EventValidationException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 
 }

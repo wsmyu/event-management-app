@@ -14,6 +14,7 @@ import HomePage from "./pages/HomePage";
 import FriendsPage from "./pages/FriendsPage";
 import FriendRequests from "./pages/FriendRequests";
 
+
 function App() {
     return (
         <UserProvider>
@@ -26,7 +27,7 @@ function App() {
                     <Route path="/event/:eventId" element={<EventDetailPage />} />
                     <Route path="/create-event" element={<CreateEventPage />} />
                     <Route path="/event/:eventId/update" element={<UpdateEventPage />} />
-                    <Route path="/venue-booking" element={<VenueBookingPage />} />
+                    <Route path="/venue-booking/:eventId" element={<VenueBookingPage />} />
                     <Route path="/event/:eventId/budget-management" element={<BudgetManagementPage />} />
                     <Route path="/user/:id/friends" element={<FriendsPage />} />
                     <Route path="/user/:id/request" element={<FriendRequests />} />

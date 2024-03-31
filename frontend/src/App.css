@@ -14,3 +14,9 @@
 .toast-body {
   color: white;
 }
+
+.venue-image{
+  width:15rem;
+  height:10rem;
+  border-radius:1rem
+}
