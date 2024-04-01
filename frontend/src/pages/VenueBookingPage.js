@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import CustomToast from "../components/CustomToast";
@@ -28,7 +28,7 @@ const VenueBookingPage = () => {
         // Hide the toast after 5 seconds (5000 milliseconds)
         setTimeout(() => {
             setShowToast(false);
-        }, 4000);
+        }, 3000);
     };
 
 
@@ -71,7 +71,7 @@ const VenueBookingPage = () => {
                 showSuccessMessage('Venue booked successfully!');
                 setTimeout(()=>{
                     setShowSuccessPage(true);
-                },4000)
+                },3000)
                 console.log("Venue booked successfully!");
             } else {
                 const errorMessage = await response.text();
@@ -119,7 +119,7 @@ const VenueBookingPage = () => {
         };
         fetchVenues();
         fetchEventUserId();
-    }, []);
+    }, [eventId]);
 
     return (
         <div className="container">

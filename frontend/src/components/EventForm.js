@@ -1,36 +1,48 @@
-// EventForm.js
 import React from 'react';
 
 const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
-
+    const eventTypes = [
+        "Conference",
+        "Exhibition",
+        "Networking Event",
+        "Seminar",
+        "Trade Fair",
+        "Workshop"
+    ];
     return (
         <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="eventName" className="form-label">User Id</label>
-                    <input type="text" className="form-control input-box" id="userId" name="userId"
-                           value={event.userId}
-                           onChange={(e) => handleChange("userId", e.target.value)}/>
-                </div>
+                {/*<div className="mb-3">*/}
+                {/*    <label htmlFor="eventName" className="form-label">User Id</label>*/}
+                {/*    <input type="text" className="form-control input-box" id="userId" name="userId"*/}
+                {/*           value={event.userId}*/}
+                {/*           onChange={(e) => handleChange("userId", e.target.value)}/>*/}
+                {/*</div>*/}
                 <div className="mb-3">
                     <label htmlFor="eventName" className="form-label">Event Name</label>
                     <input type="text" className="form-control input-box" id="eventName" name="eventName"
                            value={event.eventName}
                            onChange={(e) => handleChange("eventName", e.target.value)}/>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="eventType" className="form-label">Event Type</label>
-                    <input type="text" className="form-control input-box" id="eventType" name="eventType"
-                           value={event.eventType}
-                           onChange={(e) => handleChange("eventType", e.target.value)}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="eventDate" className="form-label">Event Date</label>
-                    <input type="date" className="form-control input-box" id="eventDate" name="eventDate"
-                           value={event.eventDate}
-                           onChange={(e) => handleChange("eventDate", e.target.value)}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="eventStartTime" className="form-label">Event Start Time</label>
+            <div className="mb-3">
+                <label htmlFor="eventType" className="form-label">Event Type</label>
+                <select className="form-select input-box" id="eventType" name="eventType"
+                        value={event.eventType}
+                        onChange={(e) => handleChange("eventType", e.target.value)}>
+                    <option value="">Select Event Type</option>
+                    {eventTypes.map((eventType, index) => (
+                        <option key={index} value={eventType}>{eventType}</option>
+                    ))}
+
+                </select>
+            </div>
+            <div className="mb-3">
+                <label htmlFor="eventDate" className="form-label">Event Date</label>
+                <input type="date" className="form-control input-box" id="eventDate" name="eventDate"
+                       value={event.eventDate}
+                       onChange={(e) => handleChange("eventDate", e.target.value)}/>
+            </div>
+            <div className="mb-3">
+            <label htmlFor="eventStartTime" className="form-label">Event Start Time</label>
                     <input type="time"  className="form-control input-box" id="eventStartTime"
                            name="eventStartTime"
                            value={event.eventStartTime}
@@ -53,9 +65,7 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                 <div className="text-center mt-3">
                     <button type="submit" className="btn btn-primary">{buttonText}</button>
                 </div>
-                {/*<div className="text-center mt-3">*/}
-                {/*    <Button variant="primary" onClick={() => navigate('/venue-booking')}>Select Venue</Button>*/}
-                {/*</div>*/}
+
             </form>
 
 

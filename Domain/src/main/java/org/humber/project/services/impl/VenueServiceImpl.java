@@ -30,8 +30,5 @@ public class VenueServiceImpl implements VenueService {
         return venueJPAService.getAllVenues();
     }
 
-//    @Override
-//    public boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest) {
-//        return venueJPAService.isVenueAvailable(venueBookingRequest);
-//    }
+
 }

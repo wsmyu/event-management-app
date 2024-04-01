@@ -51,8 +51,9 @@ public class BookingController {
             }
 
             Booking booking;
+
             //Check if the event has existing venue booking
-            //If there is existing venue booking, delete the old booking
+            //If there is existing venue booking, update the old booking
             if (event.getVenueId() != null) {
                 booking = bookingService.updateBooking(bookingRequest);
             } else {

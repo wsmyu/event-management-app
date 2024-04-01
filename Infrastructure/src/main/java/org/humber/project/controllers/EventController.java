@@ -8,15 +8,20 @@ import org.humber.project.exceptions.EventValidationException;
 import org.humber.project.services.BudgetService;
 import org.humber.project.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
     private final EventService eventService;
     private final BudgetService budgetService;
+
     @Autowired
     public EventController(EventService eventService, BudgetService budgetService) {
         this.eventService = eventService;
@@ -31,10 +36,11 @@ public class EventController {
         } catch (EventValidationException e) {
             // If event validation fails, return a 400 Bad Request response with an error message
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
         }
     }
+
     @PostMapping("/{eventId}/budget")
     public ResponseEntity<?> createOrUpdateBudget(@PathVariable Long eventId, @RequestBody Budget budget) {
         try {
@@ -80,6 +86,7 @@ public class EventController {
         Budget budget = budgetService.findBudgetByEventId(eventId);
         return ResponseEntity.ok(budget);
     }
+
     @PostMapping("/{eventId}/budget/adjust")
     public ResponseEntity<Budget> adjustEventBudget(@PathVariable Long eventId, @RequestBody Budget budgetDetails) {
         // Ensure the budgetDetails has the correct eventId set
@@ -88,11 +95,37 @@ public class EventController {
         return ResponseEntity.ok(adjustedBudget);
     }
 
-
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable Long eventId) {
         Event event = eventService.retrieveEventDetails(eventId);
         return ResponseEntity.ok().body(event);
+    }
+
+    @GetMapping("/eventType/{eventType}")
+    public ResponseEntity<List<Event>> filterEventsByType(@PathVariable String eventType) {
+        List<Event> events = eventService.filterEventsByType(eventType);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/date/{timeFrame}")
+    public ResponseEntity<List<Event>> filterEventsByDate(@PathVariable String timeFrame) {
+        List<Event> events = eventService.filterEventsByDate(timeFrame);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("city/{city}")
+    public ResponseEntity<List<Event>> filterEventsByCity(@PathVariable String city) {
+        List<Event> events = eventService.filterEventsByCity(city);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Event>> searchEventsWithFilters(@RequestParam(required = false) String eventName,
+                                                               @RequestParam(required = false) String city,
+                                                               @RequestParam(required = false) String eventType,
+                                                               @RequestParam(required = false) String timeFrame) {
+        List<Event> events = eventService.searchEventsWithFilters(eventName, city, eventType, timeFrame);
+        return ResponseEntity.ok(events);
     }
 
     @PutMapping("/{eventId}")
@@ -104,8 +137,6 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
         }
     }
-
-
 
     @DeleteMapping("/{eventId}/delete")
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
