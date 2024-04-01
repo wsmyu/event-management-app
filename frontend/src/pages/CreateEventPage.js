@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import EventForm from "../components/EventForm";
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
+import {useUser} from "../components/UserContext";
 
 const CreateEventPage = () => {
     const [event, setEvent] = useState({
@@ -18,6 +19,7 @@ const CreateEventPage = () => {
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
     const [showSuccessPage, setShowSuccessPage] = useState(false);
+    const loggedInUser = useUser().loggedInUser;
     const showSuccessMessage = (message) => {
         setShowToast(true);
         setToastVariant('success');
@@ -40,12 +42,19 @@ const CreateEventPage = () => {
         e.preventDefault();
 
         try {
+
+            // Modify the event object to include the userId
+            const eventWithUserId = {
+                ...event,
+                userId: loggedInUser.userId
+            };
+
             const response = await fetch('http://localhost:8080/api/events', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(event)
+                body: JSON.stringify(eventWithUserId)
             });
             if (response.ok) {
                 // Scroll to the top of the page

@@ -20,7 +20,7 @@ public interface EventJPARepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findByCity(@Param("city") String city);
 
     List<EventEntity> findByEventDateBetween(LocalDate startDate, LocalDate endDate);
-    @Query("SELECT e FROM EventEntity e JOIN VenueEntity v ON e.venueId = v.venueId " +
+    @Query("SELECT e FROM EventEntity e LEFT JOIN VenueEntity v ON e.venueId = v.venueId " +
             "WHERE (:eventName IS NULL OR e.eventName LIKE CONCAT('%', :eventName, '%')) " +
             "AND (:city IS NULL OR v.city = :city) " +
             "AND (:eventType IS NULL OR e.eventType = :eventType) " +

@@ -28,7 +28,15 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<Friend> getAllFriends() {
-        return friendJPAService.getAllFriends();
+    public void acceptFriendRequest(Long friendId) {
+        friendJPAService.acceptFriendRequest(friendId);
     }
+
+    @Override
+    public List<Friend> getAllFriends(Long userId) {
+        return friendJPAService.getAllFriends(userId);
+    }
+
+    @Override
+    public List<Friend> getAllFriendRequests(Long userId) { return friendJPAService.getAllFriendRequests(userId); }
 }

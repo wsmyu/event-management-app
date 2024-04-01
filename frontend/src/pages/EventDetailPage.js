@@ -5,10 +5,12 @@ import CustomToast from "../components/CustomToast";
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {formatDate,formatTime} from "../utils";
+import {formatDate, formatTime} from "../utils";
+import {useUser} from "../components/UserContext";
 
 const EventDetailPage = () => {
     const {eventId} = useParams();
+    const {loggedInUser} = useUser();
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -51,7 +53,7 @@ const EventDetailPage = () => {
     };
 
     useEffect(() => {
-
+        console.log('logged in user:', loggedInUser)
         const fetchData = async () => {
             try {
                 // Fetch event details
@@ -130,7 +132,7 @@ const EventDetailPage = () => {
 
     return (
         <div className="container">
-            {loading &&  (
+            {loading && (
                 <div><h1>Loading...</h1></div>
             )}
             {!loading && event && event.eventName !== "" ? (
@@ -139,14 +141,15 @@ const EventDetailPage = () => {
                     <div className="card mt-3">
                         <div className="card-body">
                             <h5 className="card-title"><strong>Event ID: </strong>{event.eventId}</h5>
-                            <p className="card-text"><strong>User ID: </strong> {event.userId}</p>
+                            <p className="card-text"><strong>Event Creator id:  </strong> {event.userId}</p>
                             <p className="card-text"><strong>Event Name:</strong> {event.eventName}</p>
                             <p className="card-text"><strong>Event Type:</strong> {event.eventType}</p>
                             <p className="card-text"><strong>Event Date: </strong>{event.eventDate}</p>
                             <p className="card-text"><strong>Event Start Time:</strong> {event.eventStartTime}</p>
                             <p className="card-text"><strong>Event End Time: </strong>{event.eventEndTime}</p>
                             <p className="card-text"><strong>Event Description: </strong>{event.eventDescription}</p>
-                            {venue.venueId && (
+
+                            {venue.venueId && loggedInUser !== null && loggedInUser.userId === event.userId && (
                                 <div className="card mt-3">
                                     <div className="card-header">Venue Booking Detail</div>
                                     <div className="card-body">
@@ -157,7 +160,9 @@ const EventDetailPage = () => {
                                                     Time: </strong>{venueBooking.bookingStartTime}</p>
                                                 <p><strong>Booking End Time: </strong>{venueBooking.bookingEndTime}</p>
                                                 <p><strong>Venue: </strong>{venue.venueName}</p>
-                                                <p><strong>Address: </strong>{venue.address}, {venue.city}, {venue.country}</p>
+                                                <p>
+                                                    <strong>Address: </strong>{venue.address}, {venue.city}, {venue.country}
+                                                </p>
                                             </Col>
                                             <Col md={8}>
                                                 {!venueBookingDateTimeMatch && (
@@ -173,6 +178,35 @@ const EventDetailPage = () => {
                                 </div>
                             )}
 
+                            {
+                                loggedInUser !== null && loggedInUser.userId === event.userId ? (
+                                    <div className="d-flex justify-content-center m-3 ">
+
+                                        <button className="btn btn-primary"
+                                                onClick={() => navigate(`/event/${eventId}/update`)}>
+                                            Update Event Info
+                                        </button>
+                                        <button className="btn btn-dark"
+                                                onClick={() => navigate(`/venue-booking/${eventId}`)}>
+                                            {venue ? ("Change Venue Booking") : ("Book Venue")}
+                                        </button>
+                                        <button className="btn btn-secondary"
+                                                onClick={() => navigate(`/event/${eventId}/budget-management`)}>
+                                            Manage Budget
+                                        </button>
+                                        <button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+                                            Delete Event
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="d-flex justify-content-center m-3 ">
+                                        <button className="btn btn-primary">
+                                            Join Event
+                                        </button>
+                                    </div>
+                                )
+                            }
+
                             {budget && (
                                 <div className="card mt-3">
                                     <div className="card-header">Budget Details</div>
@@ -186,21 +220,7 @@ const EventDetailPage = () => {
                             )}
                         </div>
 
-                        <div className="d-flex justify-content-center m-3  ">
-                            <button className="btn btn-primary" onClick={() => navigate(`/event/${eventId}/update`)}>
-                                Update Event Info
-                            </button>
-                            <button className="btn btn-dark" onClick={() => navigate(`/venue-booking/${eventId}`)}>
-                                {venue ? ("Change Venue Booking") : ("Book Venue")}
-                            </button>
-                            <button className="btn btn-secondary"
-                                    onClick={() => navigate(`/event/${eventId}/budget-management`)}>
-                                Manage Budget
-                            </button>
-                            <button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
-                                Delete Event
-                            </button>
-                        </div>
+
                     </div>
                     {/*Success Toast */}
                     <CustomToast

@@ -17,10 +17,14 @@ public class FriendEntity {
     @Column(name = "friend_id")
     private Long friendId;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private UserEntity userEntity;
 
-    @Column(name = "friend_user_id")
-    private Long friendUserId;
+    @JoinColumn(name = "friend_user_id")
+    @ManyToOne
+    private UserEntity friendUserEntity;
 
+    @Column(name = "pending")
+    private boolean pending;
 }

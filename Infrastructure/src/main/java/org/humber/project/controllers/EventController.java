@@ -101,34 +101,31 @@ public class EventController {
         return ResponseEntity.ok().body(event);
     }
 
-    @GetMapping("/eventType")
-    public ResponseEntity<List<Event>> filterEventsByType(@RequestParam String eventType) {
+    @GetMapping("/eventType/{eventType}")
+    public ResponseEntity<List<Event>> filterEventsByType(@PathVariable String eventType) {
         List<Event> events = eventService.filterEventsByType(eventType);
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/date")
-    public ResponseEntity<List<Event>> filterEventsByDate(@RequestParam String timeFrame) {
+    @GetMapping("/date/{timeFrame}")
+    public ResponseEntity<List<Event>> filterEventsByDate(@PathVariable String timeFrame) {
         List<Event> events = eventService.filterEventsByDate(timeFrame);
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/city")
-    public ResponseEntity<List<Event>> filterEventsByCity(@RequestParam String city) {
+    @GetMapping("city/{city}")
+    public ResponseEntity<List<Event>> filterEventsByCity(@PathVariable String city) {
         List<Event> events = eventService.filterEventsByCity(city);
         return ResponseEntity.ok(events);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Event>> searchEventsWithFilters(
-            @RequestParam(required = false) String eventName,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String eventType,
-            @RequestParam(required = false) String date
-    ) {
-        // Perform filtering based on the provided query parameters
-        List<Event> filteredEvents = eventService.searchEventsWithFilters(eventName, city, eventType, date);
-        return ResponseEntity.ok(filteredEvents);
+    public ResponseEntity<List<Event>> searchEventsWithFilters(@RequestParam(required = false) String eventName,
+                                                               @RequestParam(required = false) String city,
+                                                               @RequestParam(required = false) String eventType,
+                                                               @RequestParam(required = false) String timeFrame) {
+        List<Event> events = eventService.searchEventsWithFilters(eventName, city, eventType, timeFrame);
+        return ResponseEntity.ok(events);
     }
 
     @PutMapping("/{eventId}")

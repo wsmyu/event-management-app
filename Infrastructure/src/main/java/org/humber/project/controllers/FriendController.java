@@ -21,8 +21,13 @@ public class FriendController {
 
     @PostMapping("/add")
     public ResponseEntity<Friend> addFriend(@PathVariable Long userId, @RequestBody Friend friend) {
+        // Log the received userId and friendUserId for verification
+        System.out.println("Received userId: " + userId);
+        System.out.println("Received friendUserId: " + friend.getFriendUserId());
+
         // Set the userId from the path variable
         friend.setUserId(userId);
+        friend.setPending(true);
 
         // Set the friendUserId from the request body
         Long friendUserId = friend.getFriendUserId();
@@ -38,6 +43,13 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedFriend);
     }
 
+    @PutMapping("/{friendId}/accept")
+    public ResponseEntity<String> acceptFriendRequest(@PathVariable Long userId, @PathVariable Long friendId) {
+        friendService.acceptFriendRequest(friendId);
+        return ResponseEntity.ok().body("Friend request accepted successfully for user ID " + userId);
+    }
+
+
 
     @DeleteMapping("/{friendId}/delete")
     public ResponseEntity<String> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
@@ -47,7 +59,13 @@ public class FriendController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Friend>> getAllFriends(@PathVariable Long userId) {
-        List<Friend> allFriends = friendService.getAllFriends();
+        List<Friend> allFriends = friendService.getAllFriends(userId);
         return ResponseEntity.ok().body(allFriends);
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<List<Friend>> getAllFriendRequests(@PathVariable Long userId) {
+        List<Friend> friendRequests = friendService.getAllFriendRequests(userId);
+        return ResponseEntity.ok().body(friendRequests);
     }
 }

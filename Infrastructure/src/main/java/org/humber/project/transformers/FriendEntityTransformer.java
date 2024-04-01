@@ -2,25 +2,35 @@ package org.humber.project.transformers;
 
 import org.humber.project.domain.Friend;
 import org.humber.project.entities.FriendEntity;
+import org.humber.project.entities.UserEntity;
+import org.humber.project.repositories.UserJPARepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class FriendEntityTransformer {
+@Component
+public class FriendEntityTransformer {
 
-    public static FriendEntity transformToFriendEntity(Friend friend) {
+
+    public FriendEntity transformToFriendEntity(Friend friend, UserJPARepository userJPARepository) {
         FriendEntity friendEntity = new FriendEntity();
+        UserEntity userEntity = userJPARepository.findById(friend.getUserId()).orElse(null);
+        UserEntity friendUserEntity = userJPARepository.findById(friend.getFriendUserId()).orElse(null);
+
         friendEntity.setFriendId(friend.getFriendId());
-        friendEntity.setUserId(friend.getUserId());
-        friendEntity.setFriendUserId(friend.getFriendUserId());
+        friendEntity.setUserEntity(userEntity);
+        friendEntity.setFriendUserEntity(friendUserEntity);
+        friendEntity.setPending(true); // Set pending to true by default
         return friendEntity;
     }
 
     public static Friend transformToFriend(FriendEntity friendEntity) {
         return Friend.builder()
                 .friendId(friendEntity.getFriendId())
-                .userId(friendEntity.getUserId())
-                .friendUserId(friendEntity.getFriendUserId())
+                .userId(friendEntity.getUserEntity().getUserId())
+                .friendUserId(friendEntity.getFriendUserEntity().getUserId())
+                .pending(friendEntity.isPending()) // Map pending attribute from FriendEntity to Friend
                 .build();
     }
 

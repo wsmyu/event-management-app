@@ -9,5 +9,9 @@ public interface FriendService {
 
     void deleteFriend(Long friendId);
 
-    List<Friend> getAllFriends();
+    void acceptFriendRequest(Long friendId);
+
+    List<Friend> getAllFriends(Long userId);
+
+    List<Friend> getAllFriendRequests(Long userId);
 }

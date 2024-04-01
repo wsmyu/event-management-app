@@ -5,7 +5,12 @@ import org.humber.project.services.UserJPAService;
 import org.humber.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
+import java.security.Key;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,22 +29,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loginUser(String username, String password) {
-        // Implement login logic, e.g., check password
         User user = userJPAService.getUserByUsername(username);
 
         if (user != null && user.getPassword().equals(password)) {
-            // Passwords match, return the user
             return user;
         } else {
-            // Invalid username or password
             return null;
         }
     }
 
     @Override
+    public String generateJWTToken(User user) {
+        // Generate a secure key with sufficient length for HS256 algorithm
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        // Generate JWT token with user ID and username as claims
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .claim("userId", user.getUserId())
+                .setIssuedAt(new Date())
+                .signWith(key)
+                .compact();
+    }
+
+
+    @Override
     public List<User> searchByUsername(String username) {
         List<User> users = userJPAService.searchByUsername(username);
-
         return users;
     }
 }
