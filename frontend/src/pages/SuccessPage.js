@@ -11,7 +11,7 @@ const SuccessPage = ({eventId,message}) => {
              style={{height: "80vh"}}>
             <div className="d-flex flex-column align-items-center">
                 <h1>{message}</h1>
-                <button className="btn btn-primary" onClick={() => navigate(`/event/${eventId}`)}>View Event
+                <button className="custom-button" onClick={() => navigate(`/event/${eventId}`)}>View Event
                     Detail
                 </button>
             </div>

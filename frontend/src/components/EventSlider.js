@@ -41,15 +41,15 @@ const EventSlider = ({timeFrame,city}) => {
 
     return (
         <div className="container">
-            <div className="row">
+            <div className="row ">
                 <div className="col-1 d-flex align-items-center">
                     <button className="btn btn-dark rounded-circle"
                             onClick={() => handleScroll(-400)}>
                         &lt;
                     </button>
                 </div>
-                <div className="col-10">
-                    <div className="row flex-nowrap overflow-hidden" ref={containerRef}>
+                <div className="col-10 ">
+                    <div className="row flex-nowrap overflow-hidden py-3 " ref={containerRef}>
                         {events.map((event, index) => (
                             <div key={index} className="col-5 gap-3">
                                 <EventCard event={event}/>

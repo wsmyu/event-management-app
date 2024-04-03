@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {formatDate, formatTime} from "../utils";
 import {useUser} from "../components/UserContext";
+import Accordion from 'react-bootstrap/Accordion';
 
 const EventDetailPage = () => {
     const {eventId} = useParams();
@@ -137,11 +138,11 @@ const EventDetailPage = () => {
             )}
             {!loading && event && event.eventName !== "" ? (
                 <div>
-                    <h1 className="mt-3">Event Detail</h1>
+                    <h1>Event Detail</h1>
                     <div className="card mt-3">
                         <div className="card-body">
                             <h5 className="card-title"><strong>Event ID: </strong>{event.eventId}</h5>
-                            <p className="card-text"><strong>Event Creator id:  </strong> {event.userId}</p>
+                            <p className="card-text"><strong>Event Creator id: </strong> {event.userId}</p>
                             <p className="card-text"><strong>Event Name:</strong> {event.eventName}</p>
                             <p className="card-text"><strong>Event Type:</strong> {event.eventType}</p>
                             <p className="card-text"><strong>Event Date: </strong>{event.eventDate}</p>
@@ -150,74 +151,86 @@ const EventDetailPage = () => {
                             <p className="card-text"><strong>Event Description: </strong>{event.eventDescription}</p>
 
                             {venue.venueId && loggedInUser !== null && loggedInUser.userId === event.userId && (
-                                <div className="card mt-3">
-                                    <div className="card-header">Venue Booking Detail</div>
-                                    <div className="card-body">
-                                        <Row>
-                                            <Col md={4}>
-                                                <p><strong>Booking Date: </strong> {venueBooking.bookingDate}</p>
-                                                <p><strong>Booking Start
-                                                    Time: </strong>{venueBooking.bookingStartTime}</p>
-                                                <p><strong>Booking End Time: </strong>{venueBooking.bookingEndTime}</p>
-                                                <p><strong>Venue: </strong>{venue.venueName}</p>
-                                                <p>
-                                                    <strong>Address: </strong>{venue.address}, {venue.city}, {venue.country}
-                                                </p>
-                                            </Col>
-                                            <Col md={8}>
-                                                {!venueBookingDateTimeMatch && (
-                                                    <Alert key="info" variant="info">
-                                                        *Please ensure the booking date and time match the event
-                                                        details
-                                                    </Alert>
-                                                )}
-                                            </Col>
-                                        </Row>
-                                        <img src={venue.imageUrl} className="w-25 " alt="venue image"/>
-                                    </div>
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <Accordion className="w-100 mt-3 ">
+                                        <Accordion.Item eventKey="0">
+                                            <Accordion.Header>Venue Booking Detail</Accordion.Header>
+                                            <Accordion.Body>
+                                                <Row>
+                                                    <Col md={4}>
+                                                        <p><strong>Booking Date: </strong> {venueBooking.bookingDate}
+                                                        </p>
+                                                        <p><strong>Booking Start
+                                                            Time: </strong>{venueBooking.bookingStartTime}</p>
+                                                        <p><strong>Booking End
+                                                            Time: </strong>{venueBooking.bookingEndTime}</p>
+                                                        <p><strong>Venue: </strong>{venue.venueName}</p>
+                                                        <p>
+                                                            <strong>Address: </strong>{venue.address}, {venue.city}, {venue.country}
+                                                        </p>
+                                                    </Col>
+                                                    <Col md={4}>
+                                                        <img src={venue.imageUrl} className="rounded w-100 mb-3"
+                                                             alt="venue image"/>
+                                                    </Col>
+                                                    <Col md={4}>
+                                                        {!venueBookingDateTimeMatch && (
+                                                            <Alert key="info" variant="info" className="w-100">
+                                                                *Please ensure the booking date and time match the event
+                                                                details
+                                                            </Alert>
+                                                        )}
+                                                    </Col>
+                                                </Row>
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    </Accordion>
                                 </div>
+                            )}
+
+
+                            {loggedInUser !== null && loggedInUser.userId === event.userId && budget && (
+                                <Accordion className="mt-3">
+                                    <Accordion.Item eventKey="0">
+                                        <Accordion.Header>Budget Details</Accordion.Header>
+                                        <Accordion.Body>
+                                            <p>Venue Cost: ${budget.venueCost}</p>
+                                            <p>Beverage Cost Per Person: ${budget.beverageCostPerPerson}</p>
+                                            <p>Guest Number: {budget.guestNumber}</p>
+                                            <p>Total Budget: ${budget.totalBudget}</p>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
                             )}
 
                             {
                                 loggedInUser !== null && loggedInUser.userId === event.userId ? (
-                                    <div className="d-flex justify-content-center m-3 ">
-
-                                        <button className="btn btn-primary"
+                                    <div className="d-flex justify-content-center m-3 gap-3 ">
+                                        <button className="custom-button"
                                                 onClick={() => navigate(`/event/${eventId}/update`)}>
                                             Update Event Info
                                         </button>
-                                        <button className="btn btn-dark"
+                                        <button className="custom-button"
                                                 onClick={() => navigate(`/venue-booking/${eventId}`)}>
                                             {venue ? ("Change Venue Booking") : ("Book Venue")}
                                         </button>
-                                        <button className="btn btn-secondary"
+                                        <button className="custom-button"
                                                 onClick={() => navigate(`/event/${eventId}/budget-management`)}>
                                             Manage Budget
                                         </button>
-                                        <button className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+                                        <button className="btn btn-outline-danger"
+                                                onClick={() => setShowDeleteModal(true)}>
                                             Delete Event
                                         </button>
                                     </div>
                                 ) : (
                                     <div className="d-flex justify-content-center m-3 ">
-                                        <button className="btn btn-primary">
+                                        <button className="custom-button">
                                             Join Event
                                         </button>
                                     </div>
                                 )
                             }
-
-                            {budget && (
-                                <div className="card mt-3">
-                                    <div className="card-header">Budget Details</div>
-                                    <div className="card-body">
-                                        <p>Venue Cost: ${budget.venueCost}</p>
-                                        <p>Beverage Cost Per Person: ${budget.beverageCostPerPerson}</p>
-                                        <p>Guest Number: {budget.guestNumber}</p>
-                                        <p>Total Budget: ${budget.totalBudget}</p>
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
 

@@ -11,12 +11,6 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
     ];
     return (
         <form onSubmit={handleSubmit}>
-                {/*<div className="mb-3">*/}
-                {/*    <label htmlFor="eventName" className="form-label">User Id</label>*/}
-                {/*    <input type="text" className="form-control input-box" id="userId" name="userId"*/}
-                {/*           value={event.userId}*/}
-                {/*           onChange={(e) => handleChange("userId", e.target.value)}/>*/}
-                {/*</div>*/}
                 <div className="mb-3">
                     <label htmlFor="eventName" className="form-label">Event Name</label>
                     <input type="text" className="form-control input-box" id="eventName" name="eventName"
@@ -63,7 +57,7 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                               onChange={(e) => handleChange("eventDescription", e.target.value)}/>
                 </div>
                 <div className="text-center mt-3">
-                    <button type="submit" className="btn btn-primary">{buttonText}</button>
+                    <button type="submit" className="custom-button">{buttonText}</button>
                 </div>
 
             </form>

@@ -37,11 +37,11 @@ const EventCard = ({event}) => {
 
 
     return (
-        <div>
-            <Card style={{width: '22rem'}}>
+        <div className="event-card">
+            <Card >
                 <Link to={`/event/${event.eventId}`} className="custom-link">
                     <Card.Body>
-                        <Card.Title>{event.eventName}</Card.Title>
+                        <Card.Title >{event.eventName}</Card.Title>
                         <Card.Text className="card-row">
                             <BiCategory/>
                             <span>{event.eventType}</span>
@@ -56,7 +56,7 @@ const EventCard = ({event}) => {
                         </Card.Text>
                         <Card.Text className="card-row">
                             <GoNote/>
-                            <span>{event.eventDescription}</span>
+                            <span className="event-description">{event.eventDescription}</span>
                         </Card.Text>
 
                         <Card.Text className="card-row">

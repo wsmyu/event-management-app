@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import EventCard from "../components/EventCard";
 import CloseButton from 'react-bootstrap/CloseButton';
 
@@ -129,39 +128,51 @@ const SearchResultPage = () => {
     return (
 
         <div className="container">
-            <div className="d-flex gap-3 justify-content-center align-items-center">
-                <DropdownButton id="dropdown-basic-button" title={selectedCity ? selectedCity : "Filter by City"}>
-                    {
-                        cities.map((city, index) => (
-                            <Dropdown.Item key={index}
-                                           onClick={() => setSelectedCity(city)}>{city}</Dropdown.Item>
-                        ))
-                    }
-                </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" title={selectedDate ? selectedDateText : "Filter by Date"}>
-                    <Dropdown.Item onClick={() => {
-                        setSelectedDate('thisMonth');
-                        setSelectedDateText('This Month');
-                    }}>This Month</Dropdown.Item>
-                    <Dropdown.Item onClick={() => {
-                        setSelectedDate('nextMonth');
-                        setSelectedDateText('Next Month');
-                    }}>Next Month</Dropdown.Item>
-                    <Dropdown.Item onClick={() => {
-                        setSelectedDate('thisYear');
-                        setSelectedDateText('This Year');
-                    }}>This Year</Dropdown.Item>
-                </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" title={selectedType ? selectedType : "Filter by Event Type"}>
-                    {
-                        eventTypes.map((type, index) => (
+            <div className="d-flex gap-5 justify-content-center align-items-center">
+                <Dropdown>
+                    <Dropdown.Toggle id="custom-button">
+                        {selectedCity ? selectedCity : "Filter by City"}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {cities.map((city, index) => (
+                            <Dropdown.Item key={index} onClick={() => setSelectedCity(city)}>{city}</Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                <Dropdown>
+                    <Dropdown.Toggle id="custom-button">
+                        {selectedDate ? selectedDateText : "Filter by Date"}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => {
+                            setSelectedDate('thisMonth');
+                            setSelectedDateText('This Month');
+                        }}>This Month</Dropdown.Item>
+                        <Dropdown.Item onClick={() => {
+                            setSelectedDate('nextMonth');
+                            setSelectedDateText('Next Month');
+                        }}>Next Month</Dropdown.Item>
+                        <Dropdown.Item onClick={() => {
+                            setSelectedDate('thisYear');
+                            setSelectedDateText('This Year');
+                        }}>This Year</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                <Dropdown>
+                    <Dropdown.Toggle id="custom-button">
+                        {selectedType ? selectedType : "Filter by Event Type"}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {eventTypes.map((type, index) => (
                             <Dropdown.Item key={index} onClick={() => setSelectedType(type)}>{type}</Dropdown.Item>
-                        ))
-                    }
-                </DropdownButton>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
                 <CloseButton onClick={clearFilters}/>
             </div>
-            <div className="mt-3">
+            <div className="mt-5">
                 <h3>{generateFilterText()}</h3>
             </div>
 
