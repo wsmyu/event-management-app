@@ -3,6 +3,7 @@ import {useParams, useNavigate} from 'react-router-dom';
 import EventForm from "../components/EventForm";
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
+import {formatDate, formatTime} from "../utils";
 
 const UpdateEventPage = () => {
     const {eventId} = useParams();
@@ -45,24 +46,15 @@ const UpdateEventPage = () => {
         }
     };
 
-    // Function to format date as yyyy-MM-dd
-    const formatDate = (dateArray) => {
-        const year = dateArray[0];
-        const month = dateArray[1].toString().padStart(2, '0');
-        const day = dateArray[2].toString().padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const formatTime = (timeArray) => {
-        // Extract hours and minutes from the time array
-        const hours = timeArray[0].toString().padStart(2, '0'); // Ensure two digits for hours
-        const minutes = timeArray[1].toString().padStart(2, '0'); // Ensure two digits for minutes
-        return `${hours}:${minutes}`;
-    }
     const showSuccessMessage = (message) => {
         setShowToast(true);
         setToastVariant('success');
         setToastMessage(message);
+
+        // Hide the toast after 5 seconds (5000 milliseconds)
+        setTimeout(() => {
+            setShowToast(false);
+        }, 2000);
     };
     const handleChange = (name, value) => {
         setEvent(prevState => ({
@@ -84,7 +76,9 @@ const UpdateEventPage = () => {
                 // Scroll to the top of the page
                 window.scrollTo(0, 0);
                 showSuccessMessage('Event updated successfully!');
-                setShowSuccessPage(true);
+                setTimeout(() => {
+                    setShowSuccessPage(true)
+                }, 3000)
             } else {
                 const errorMessage = await response.text();
                 setToastVariant('danger');

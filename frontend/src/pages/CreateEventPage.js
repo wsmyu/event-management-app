@@ -28,7 +28,7 @@ const CreateEventPage = () => {
         // Hide the toast after 5 seconds (5000 milliseconds)
         setTimeout(() => {
             setShowToast(false);
-        }, 3000);
+        }, 2000);
     };
 
     const handleChange = (name, value) => {
