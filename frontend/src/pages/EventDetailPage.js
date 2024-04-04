@@ -95,7 +95,7 @@ const EventDetailPage = () => {
                     }
 
                     // Fetch budget details
-                    const budgetResponse = await fetch(`http://localhost:8080/api/events/${eventId}/budget`);
+                    const budgetResponse = await fetch(`http://localhost:8080/api/budget/${eventId}`);
                     if (budgetResponse.ok) {
                         const budgetData = await budgetResponse.json();
                         setBudget(budgetData);
