@@ -7,11 +7,9 @@ import java.util.List;
 public interface EventService {
     Event createEvent(Event event) ;
     Event retrieveEventDetails(Long eventId);
-//    Event updateEvent(Long eventId, Event event) ;
     Event updateEventInfo(Long eventId,Event event);
     Event updateEventVenue(Long eventId, Long venueId);
     void deleteEvent(Long eventId);
-    List<Event> searchEvents(String eventName);
     List<Event> filterEventsByType(String eventType);
     List<Event> filterEventsByCity(String city);
     List<Event> filterEventsByDate(String timeFrame);

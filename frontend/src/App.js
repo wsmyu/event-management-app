@@ -16,6 +16,7 @@ import FriendListPage from "./pages/FriendListPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import FriendRequests from "./pages/FriendRequests";
 import FeedbackPage from "./pages/FeedbackPage";
+import Footer from "./components/Footer";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
                         <Route path="/feedback" element={<FeedbackPage />} />
                     </Routes>
                 </div>
+                <Footer />
 
             </div>
         </UserProvider>

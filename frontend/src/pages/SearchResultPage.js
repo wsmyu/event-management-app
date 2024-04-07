@@ -78,9 +78,6 @@ const SearchResultPage = () => {
     useEffect(() => {
         const constructFilterQueryAndUrl = () => {
             let queryString = '';
-            // if (eventName) {
-            //     queryString += `eventName=${eventName}`;
-            // }
 
             if (selectedCity) {
                 queryString += `&city=${selectedCity}`;
