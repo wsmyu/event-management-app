@@ -3,6 +3,7 @@ package org.humber.project.services.impl;
 import org.humber.project.domain.User;
 import org.humber.project.services.UserJPAService;
 import org.humber.project.services.UserService;
+import org.humber.project.services.UserRegistrationValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
@@ -16,14 +17,17 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserJPAService userJPAService;
+    private final UserRegistrationValidationService userRegistrationValidationService;
 
     @Autowired
-    public UserServiceImpl(UserJPAService userJPAService) {
+    public UserServiceImpl(UserJPAService userJPAService, UserRegistrationValidationService userRegistrationValidationService) {
         this.userJPAService = userJPAService;
+        this.userRegistrationValidationService = userRegistrationValidationService;
     }
 
     @Override
     public User createUser(User user){
+        userRegistrationValidationService.validateUserRegistration(user);
         return userJPAService.createUser(user);
     }
 

@@ -10,7 +10,16 @@ public enum ErrorCode {
     INVALID_EVENT_TIME("Event end time must after event start time"),
     INVALID_BOOKING_DATE("Booking date must in the future"),
     INVALID_BOOKING_TIME("Booking end time must after booking start time"),
-    BOOKING_DATE_TIME_MISMATCH("Booking date and time do not match event date and time");
+    BOOKING_DATE_TIME_MISMATCH("Booking date and time do not match event date and time"),
+    USERNAME_ALREADY_REGISTERED("Username has been registered by the others"),
+    INVALID_FRIEND_REQUEST("The user is already your friend or friend request is pending"),
+    INVALID_USERNAME("Username can not be empty"),
+    INVALID_PASSWORD("Password can not be empty"),
+    INVALID_FIRST_NAME("First name can not be empty"),
+    INVALID_LAST_NAME("Last name can not be empty"),
+    INVALID_EMAIL("Email can not be empty"),
+    INVALID_RATING("Rating can not be empty"),
+    INVALID_MESSAGE("Message can not be empty");
     private final String message;
 
     ErrorCode(String message) {

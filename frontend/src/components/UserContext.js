@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const UserContext = createContext();
 
@@ -9,18 +10,18 @@ export const UserProvider = ({ children }) => {
     // Function to handle login
     const handleLogin = (user) => {
         setLoggedInUser(user);
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        Cookies.set('loggedInUser', JSON.stringify(user), { expires: 7 }); // Set cookie expiration time
     };
 
     // Function to handle logout
     const handleLogout = () => {
         setLoggedInUser(null);
-        localStorage.removeItem('loggedInUser');
+        Cookies.remove('loggedInUser');
     };
 
-    // Check if there is a logged-in user in local storage on app load
+    // Check if there is a logged-in user in cookies on app load
     useEffect(() => {
-        const storedUser = localStorage.getItem('loggedInUser');
+        const storedUser = Cookies.get('loggedInUser');
         if (storedUser) {
             setLoggedInUser(JSON.parse(storedUser));
         }

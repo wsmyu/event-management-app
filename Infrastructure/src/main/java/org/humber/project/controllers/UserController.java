@@ -2,9 +2,11 @@ package org.humber.project.controllers;
 
 import org.humber.project.domain.User;
 import org.humber.project.domain.UserLoginRequest;
+import org.humber.project.exceptions.UserValidationException;
 import org.humber.project.services.UserService;
 import org.humber.project.services.UserJPAService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.humber.project.services.UserRegistrationValidationService;
+import org.humber.project.services.UserLoginValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,40 +17,67 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final UserJPAService userJPAService;
+    private final List<UserRegistrationValidationService> UserRegistrationValidationService;
+    private final List<UserLoginValidationService> UserLoginValidationService;
 
-    @Autowired
-    private UserJPAService userJPAService;
+    public UserController(UserService userService, UserJPAService userJPAService, List<UserRegistrationValidationService> userRegistrationValidationService, List<UserLoginValidationService> userLoginValidationService) {
+        this.userService = userService;
+        this.userJPAService = userJPAService;
+        UserRegistrationValidationService = userRegistrationValidationService;
+        UserLoginValidationService = userLoginValidationService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
+        try {
+            // Iterate over each UserValidationService in the list and validate the user
+            for (UserRegistrationValidationService validationService : UserRegistrationValidationService) {
+                validationService.validateUserRegistration(user);
+            }
 
-        if (createdUser != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully. User ID: " + createdUser.getUserId());
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user.");
+            // Proceed to create user if validation passes
+            User createdUser = userService.createUser(user);
+
+            if (createdUser != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully. User ID: " + createdUser.getUserId());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user.");
+            }
+        } catch (UserValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginRequest userLoginRequest) {
-        // Check if the provided credentials match a user in the database
-        User user = userService.loginUser(userLoginRequest.getUsername(), userLoginRequest.getPassword());
+        try {
+            // Validate user login credentials
+            for (UserLoginValidationService validationService : UserLoginValidationService) {
+                validationService.validateUserLogin(userLoginRequest.getUsername(), userLoginRequest.getPassword());
+            }
 
-        if (user != null) {
-            // If login is successful, generate JWT token
-            String token = userService.generateJWTToken(user); // Generate JWT token using UserService method
+            // Check if the provided credentials match a user in the database
+            User user = userService.loginUser(userLoginRequest.getUsername(), userLoginRequest.getPassword());
 
-            // Return the JWT token in the response
-            return ResponseEntity.ok().body(token);
-        } else {
-            // If login failed, return unauthorized status
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            if (user != null) {
+                // If login is successful, generate JWT token
+                String token = userService.generateJWTToken(user);
+
+                // Return the JWT token in the response
+                return ResponseEntity.ok().body(token);
+            } else {
+                // If login failed, return unauthorized status
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+        } catch (UserValidationException e) {
+            // If validation fails, return bad request status with error message
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
