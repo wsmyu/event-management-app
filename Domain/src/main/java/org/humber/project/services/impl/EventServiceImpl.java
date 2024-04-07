@@ -136,10 +136,8 @@ public class EventServiceImpl implements EventService {
             eventJPAService.deleteEventById(eventId);
         } catch (Exception e) {
             log.error("Error deleting event with ID {}", eventId);
-            e.printStackTrace();
         }
     }
-
 
     @Override
     public List<Event> filterEventsByType(String eventType) {
