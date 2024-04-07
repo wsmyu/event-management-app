@@ -70,10 +70,7 @@ public class BookingServiceImpl implements BookingService {
     public boolean checkVenueAvailability(VenueBookingRequest venueBookingRequest) {
         // Retrieve existing bookings for the venue on the given date
         List<Booking> bookingsForDate = retrieveVenueBookings(venueBookingRequest.getVenueId()).stream()
-                .filter(booking -> {
-                    Event event = eventService.retrieveEventDetails(booking.getEventId());
-                    return event.getEventDate().equals(venueBookingRequest.getBookingDate());
-                })
+                .filter(booking -> booking.getBookingDate().equals(venueBookingRequest.getBookingDate()))
                 .collect(Collectors.toList());
 
         // If there are no bookings for the venue on the given date, it's available for the whole day
