@@ -10,6 +10,7 @@
 }
 .page-content{
   padding:2rem;
+  min-height:100vh;
 }
 .input-box{
   max-width: 20rem;
