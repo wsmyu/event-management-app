@@ -4,6 +4,7 @@ import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
+import {useUser} from "../components/UserContext";
 
 
 const VenueBookingPage = () => {
@@ -19,6 +20,7 @@ const VenueBookingPage = () => {
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
     const [showSuccessPage,setShowSuccessPage]=useState(false);
+    const loggedInUser = useUser().loggedInUser;
 
     const showSuccessMessage = (message) => {
         setShowToast(true);
@@ -129,7 +131,12 @@ const VenueBookingPage = () => {
                 toastVariant={toastVariant}
                 toastMessage={toastMessage}
             />
-
+            {loggedInUser === null || loggedInUser.userId !== userId ? (
+                <div className="d-flex justify-content-center">
+                    <p>You are not permitted to access this page.</p>
+                </div>
+            ) : (
+                <>
             {!showBookingForm && !showSuccessPage && (
                 <div>
                     <h1>Book Venue </h1>
@@ -203,6 +210,8 @@ const VenueBookingPage = () => {
             {/*Show success page*/}
             {showSuccessPage && (
                <SuccessPage eventId={eventId} message="Venue booked successfully" />
+            )}
+                </>
             )}
         </div>
     );
