@@ -39,7 +39,6 @@ function App() {
                         <Route path="/event/:eventId/budget-management" element={<BudgetManagementPage />} />
                         <Route path="/search" element={<SearchResultPage />} />
 
-                        <Route path="/user/:id/friends" element={<FriendsPage />} />
                         <Route path="/user/:id/request" element={<FriendRequests />} />
                         <Route path="/event/:eventId/guest-management" element={<GuestManagementPage />} />
                         <Route path="/invitations" element={<InvitationsPage />} />
