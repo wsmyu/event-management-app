@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
-            // Iterate over each UserRegistrationValidationService in the list and validate the user
+            // Validate the user creation
             for (UserRegistrationValidationService validationService : UserRegistrationValidationService) {
                 validationService.validateUserRegistration(user);
             }

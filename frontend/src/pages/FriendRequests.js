@@ -135,25 +135,29 @@ const FriendRequests = () => {
       <Row className="justify-content-center">
         <Col xs={12} md={8}>
           <h2>Friend Requests</h2>
-          <ListGroup>
-            {friendRequests.map(request => (
-              <ListGroup.Item key={request.id}>
-                <Row>
-                  <Col>
-                    <span>
-                      <a href="#" onClick={() => handleUsernameClick(request.senderInfo.userId)}>
-                        {request.senderInfo.username}
-                      </a> sent you a friend request
-                    </span>
-                  </Col>
-                  <Col xs="auto">
-                    <Button variant="success" className="ml-2" onClick={() => handleAcceptRequest(request.friendId, request.senderInfo.username)}>Accept</Button>
-                    <Button variant="danger" className="ml-2" onClick={() => handleDeleteRequest(request.friendId, request.senderInfo.username)}>Delete</Button>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+          {friendRequests.length === 0 ? (
+            <p>No friend requests found</p>
+          ) : (
+            <ListGroup>
+              {friendRequests.map(request => (
+                <ListGroup.Item key={request.id}>
+                  <Row>
+                    <Col>
+                      <span>
+                        <a href="#" onClick={() => handleUsernameClick(request.senderInfo.userId)}>
+                          {request.senderInfo.username}
+                        </a> sent you a friend request
+                      </span>
+                    </Col>
+                    <Col xs="auto">
+                      <Button variant="success" className="ml-2" onClick={() => handleAcceptRequest(request.friendId, request.senderInfo.username)}>Accept</Button>
+                      <Button variant="danger" className="ml-2" onClick={() => handleDeleteRequest(request.friendId, request.senderInfo.username)}>Delete</Button>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
           {/* Popup box code */}
           <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
