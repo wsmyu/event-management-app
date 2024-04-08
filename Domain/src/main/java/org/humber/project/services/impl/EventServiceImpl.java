@@ -47,10 +47,10 @@ public class EventServiceImpl implements EventService {
 
         } catch (EventValidationException e) {
             log.error("Event Invalid: {}", e.getMessage());
-            throw e; // Rethrow the exception to stop further processing
+            throw e;
         } catch (Exception e) {
             log.error("Failed to create event:{} ", e.getMessage());
-            return null;
+            throw new RuntimeException("Failed to update event venue: " + e.getMessage());
         }
     }
 
@@ -67,6 +67,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event updateEventInfo(Long eventId, Event event) {
         try {
+            for (EventValidationService validationService : eventValidationService) {
+                // Perform validation using the current validation service
+                validationService.validateEvent(event);
+            }
             Event existingEvent = eventJPAService.findEventById(eventId);
             if (existingEvent == null) {
                 throw new EventNotFoundException(ErrorCode.EVENT_NOT_FOUND);
@@ -85,9 +89,12 @@ public class EventServiceImpl implements EventService {
 
             return updatedEvent;
 
+        } catch (EventValidationException e) {
+            log.error("Event Invalid: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
-            log.error("Failed to update event" + e.getMessage());
-            throw new RuntimeException("Failed to update event", e);
+            log.error("Failed to create event:{} ", e.getMessage());
+            throw new RuntimeException("Failed to update event venue: " + e.getMessage());
         }
     }
 
@@ -112,7 +119,7 @@ public class EventServiceImpl implements EventService {
             }
         } catch (Exception e) {
             log.error("Failed to update event venue : {}", e.getMessage());
-            throw new RuntimeException("Failed to update event venue", e);
+            throw new RuntimeException("Failed to update event venue: " + e.getMessage());
         }
     }
 

@@ -81,30 +81,36 @@ const CreateEventPage = () => {
     return (
         <div className="container">
             <div className="d-flex justify-content-center">
-                {!showSuccessPage && (
+                {loggedInUser ? (
+                    // Show create event form if user is logged in
+                    !showSuccessPage && (
+                        <div>
+                            <CustomToast
+                                showToast={showToast}
+                                setShowToast={setShowToast}
+                                toastVariant={toastVariant}
+                                toastMessage={toastMessage}
+                            />
+                            <h1>Create Event</h1>
+                            <EventForm
+                                event={event}
+                                handleChange={handleChange}
+                                handleSubmit={handleSubmit}
+                                buttonText="Create Event"
+                            />
+                        </div>
+                    )
+                ) : (
                     <div>
-                        <CustomToast
-                            showToast={showToast}
-                            setShowToast={setShowToast}
-                            toastVariant={toastVariant}
-                            toastMessage={toastMessage}
-                        />
-                        <h1>Create Event</h1>
-                        <EventForm
-                            event={event}
-                            handleChange={handleChange}
-                            handleSubmit={handleSubmit}
-                            buttonText="Create Event"
-                        />
+                        <p>Please login first to create an event.</p>
                     </div>
                 )}
 
                 {showSuccessPage && (
-                   <SuccessPage eventId={eventId} message="Event created successfully" />
+                    <SuccessPage eventId={eventId} message="Event created successfully" />
                 )}
-
             </div>
         </div>
-    )
+    );
 }
 export default CreateEventPage;

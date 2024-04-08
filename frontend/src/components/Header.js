@@ -30,11 +30,9 @@ const Header = () => {
                     <Nav>
                         {loggedInUser && (
                             <>
-
-                                <Nav.Link as={Link} to="/invitations">Invitations</Nav.Link>
-
                                 <NavDropdown title="Event" id="basic-nav-dropdown">
                                     <NavDropdown.Item as={Link} to={`/create-event`}>Create Event</NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to={`/invitations`}>Invitations</NavDropdown.Item>
                                 </NavDropdown>
                                 <NavDropdown title="Friend" id="basic-nav-dropdown">
                                     <NavDropdown.Item as={Link} to={`/user/friends`}>Friend List</NavDropdown.Item>
