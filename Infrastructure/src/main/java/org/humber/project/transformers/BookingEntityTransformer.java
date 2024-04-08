@@ -16,7 +16,6 @@ public class BookingEntityTransformer {
         booking.setBookingDate(bookingEntity.getBookingDate());
         booking.setBookingStartTime(bookingEntity.getBookingStartTime());
         booking.setBookingEndTime(bookingEntity.getBookingEndTime());
-        booking.setBookingCreationDate(bookingEntity.getBookingCreationDate());
         return booking;
     }
 
@@ -29,7 +28,6 @@ public class BookingEntityTransformer {
         bookingEntity.setBookingDate(booking.getBookingDate());
         bookingEntity.setBookingStartTime(booking.getBookingStartTime());
         bookingEntity.setBookingEndTime(booking.getBookingEndTime());
-        bookingEntity.setBookingCreationDate(booking.getBookingCreationDate());
         return bookingEntity;
     }
 }
