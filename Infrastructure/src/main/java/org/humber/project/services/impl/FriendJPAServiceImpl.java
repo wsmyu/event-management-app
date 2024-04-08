@@ -81,4 +81,14 @@ public class FriendJPAServiceImpl implements FriendJPAService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean areFriends(Long userId1, Long userId2) {
+        List<FriendEntity> friendEntities = friendJPARepository.findAll();
+        return friendEntities.stream()
+                .anyMatch(friendEntity ->
+                        (friendEntity.getUserEntity().getUserId().equals(userId1) && friendEntity.getFriendUserEntity().getUserId().equals(userId2))
+                                || (friendEntity.getUserEntity().getUserId().equals(userId2) && friendEntity.getFriendUserEntity().getUserId().equals(userId1))
+                                && !friendEntity.isPending());
+    }
+
 }

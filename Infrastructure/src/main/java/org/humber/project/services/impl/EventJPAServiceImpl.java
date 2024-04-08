@@ -72,8 +72,8 @@ public class EventJPAServiceImpl implements EventJPAService {
     }
 
     @Override
-    public List<Event> findEventsByFilters(String eventName, String city, String eventType,LocalDate startDate, LocalDate endDate) {
-        return Optional.of(eventJPARepository.findByFilters(eventName,city,eventType,startDate,endDate))
+    public List<Event> getAllEvents() {
+        return Optional.of(eventJPARepository.findAll())
                 .map(EventEntityTransformer::transformToEvents)
                 .orElse(null);
     }

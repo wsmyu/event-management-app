@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,14 +25,12 @@ public class EventServiceImpl implements EventService {
     private final EventJPAService eventJPAService;
     private final BookingService bookingService;
     private final List<EventValidationService> eventValidationService;
-    private final BudgetService budgetService;
 
     @Autowired
-    public EventServiceImpl(EventJPAService eventJPAService, BookingService bookingService, List<EventValidationService> eventValidationService, BudgetService budgetService) {
+    public EventServiceImpl(EventJPAService eventJPAService, BookingService bookingService, List<EventValidationService> eventValidationService) {
         this.eventJPAService = eventJPAService;
         this.bookingService = bookingService;
         this.eventValidationService = eventValidationService;
-        this.budgetService = budgetService;
     }
 
     @Override
@@ -43,15 +42,7 @@ public class EventServiceImpl implements EventService {
             }
             // Save the event after confirming venue availability
             Event savedEvent = eventJPAService.saveEvent(event);
-//            Budget budget = new Budget();
-////             assuming these details come from the event or elsewhere
-//            budget.setEventId(event.getEventId()); // make sure eventId is set after saving the event
-//            budget.setVenueCost(100.25); // example static values, replace with actual
-//            budget.setBeverageCostPerPerson(15.0);
-//            budget.setGuestNumber(100);
-//            budget.setTotalBudget(budget.getVenueCost() + (budget.getBeverageCostPerPerson() * budget.getGuestNumber()));
-//
-//            budgetService.createOrUpdateBudget(budget);
+
             return savedEvent;
 
         } catch (EventValidationException e) {
@@ -145,13 +136,7 @@ public class EventServiceImpl implements EventService {
             eventJPAService.deleteEventById(eventId);
         } catch (Exception e) {
             log.error("Error deleting event with ID {}", eventId);
-            e.printStackTrace();
         }
-    }
-
-    @Override
-    public List<Event> searchEvents(String eventName) {
-        return eventJPAService.findEventsByEventName(eventName);
     }
 
     @Override
@@ -188,34 +173,34 @@ public class EventServiceImpl implements EventService {
         }
         return eventJPAService.findEventsByDateRange(startDate, endDate);
     }
-
     @Override
     public List<Event> searchEventsWithFilters(String eventName, String city, String eventType, String timeFrame) {
-        LocalDate startDate = null;
-        LocalDate endDate = null;
+        List<Event> filteredEvents = new ArrayList<>();
 
-        // Determine start and end dates based on time frame filter
-        if (timeFrame != null && !timeFrame.isEmpty()) {
-            switch (timeFrame) {
-                case "thisMonth":
-                    startDate = LocalDate.now().withDayOfMonth(1);
-                    endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-                    break;
-                case "nextMonth":
-                    startDate = LocalDate.now().plusMonths(1).withDayOfMonth(1);
-                    endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-                    break;
-                case "thisYear":
-                    Year currentYear = Year.now();
-                    startDate = LocalDate.now();
-                    endDate = currentYear.atDay(currentYear.length());
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid timeframe: " + timeFrame);
+        // Start with all events if no filters applied yet
+        if (eventName == null) {
+            filteredEvents.addAll(eventJPAService.getAllEvents());
+        } else {
+            // Apply filters based on the previously filtered events
+                // Filter by event name
+                filteredEvents.addAll(eventJPAService.findEventsByEventName(eventName));
+
+            if (city != null && !city.isEmpty()) {
+                // Filter by city
+                filteredEvents.retainAll(filterEventsByCity(city));
+            }
+
+            if (eventType != null && !eventType.isEmpty()) {
+                // Filter by event type
+                filteredEvents.retainAll(filterEventsByType(eventType));
+            }
+
+            if (timeFrame != null && !timeFrame.isEmpty()) {
+                // Filter by date range
+                filteredEvents.retainAll(filterEventsByDate(timeFrame));
             }
         }
-        // Perform filtering based on the provided parameters
-        List<Event> filteredEvents = eventJPAService.findEventsByFilters(eventName, city, eventType, startDate,endDate);
         return filteredEvents;
     }
+
 }

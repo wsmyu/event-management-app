@@ -138,7 +138,7 @@ const EventDetailPage = () => {
             )}
             {!loading && event && event.eventName !== "" ? (
                 <div>
-                    <h1>Event Detail</h1>
+                    <h1>Event Details</h1>
                     <div className="card mt-3">
                         <div className="card-body">
                             <h5 className="card-title"><strong>Event ID: </strong>{event.eventId}</h5>
@@ -154,7 +154,7 @@ const EventDetailPage = () => {
                                 <div className="d-flex justify-content-center align-items-center">
                                     <Accordion className="w-100 mt-3 ">
                                         <Accordion.Item eventKey="0">
-                                            <Accordion.Header>Venue Booking Detail</Accordion.Header>
+                                            <Accordion.Header>Venue Booking Details</Accordion.Header>
                                             <Accordion.Body>
                                                 <Row>
                                                     <Col md={4}>

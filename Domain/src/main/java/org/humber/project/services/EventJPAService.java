@@ -14,5 +14,5 @@ public interface EventJPAService {
     List<Event> findEventsByEventType(String eventType);
     List<Event> findEventsByCity(String city);
     List<Event> findEventsByDateRange(LocalDate startDate, LocalDate endDate);
-    List<Event> findEventsByFilters(String eventName, String city, String eventType, LocalDate startDate, LocalDate endDate);
+    List <Event> getAllEvents();
 }

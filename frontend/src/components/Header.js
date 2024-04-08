@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import {useUser} from '../components/UserContext';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
-import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import NavDropdown from 'react-bootstrap/NavDropdown'; // Import NavDropdown here
+import {useNavigate} from 'react-router-dom';
 
 const Header = () => {
     const {loggedInUser, handleLogout} = useUser();
     const navigate = useNavigate();
     const [searchWord, setSearchWord] = useState('');
+
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchWord.trim() !== '') {
@@ -26,18 +27,25 @@ const Header = () => {
                 <Navbar.Brand as={Link} to="/">Event Management Application</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link as={Link} to="/create-event">Create Event</Nav.Link>
-                        <Nav.Link as={Link} to="/user/create">Create User</Nav.Link>
-                        {loggedInUser ? (
+                    <Nav>
+                        {loggedInUser && (
                             <>
-                                <Nav.Link as={Link} to={`/user/${loggedInUser.id}/friends`}>Friend List</Nav.Link>
-                                <Nav.Link as={Link} to={`/user/${loggedInUser.id}/request`}>Friend Request</Nav.Link>
+
                                 <Nav.Link as={Link} to="/invitations">Invitations</Nav.Link>
 
+                                <NavDropdown title="Event" id="basic-nav-dropdown">
+                                    <NavDropdown.Item as={Link} to={`/create-event`}>Create Event</NavDropdown.Item>
+                                </NavDropdown>
+                                <NavDropdown title="Friend" id="basic-nav-dropdown">
+                                    <NavDropdown.Item as={Link} to={`/user/friends`}>Friend List</NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to={`/user/request`}>Friend Request</NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to={`/user/search-friend`}>Search for
+                                        Friend</NavDropdown.Item>
+                                </NavDropdown>
                             </>
-                        ) : (
-                            <Nav.Link as={Link} to="/user/login">Login</Nav.Link>
+                        )}
+                        {loggedInUser && (
+                            <Nav.Link as={Link} to={`/feedback`}>Feedback</Nav.Link>
                         )}
                     </Nav>
                     <Form className="d-flex">
@@ -58,7 +66,8 @@ const Header = () => {
                         </Nav>
                     ) : (
                         <Nav>
-                            <Nav.Link as={Link} to="/user/login">Login</Nav.Link>
+                            <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                            <Nav.Link as={Link} to="/register">Register</Nav.Link>
                         </Nav>
                     )}
                 </Navbar.Collapse>

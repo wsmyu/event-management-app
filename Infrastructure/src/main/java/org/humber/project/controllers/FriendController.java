@@ -1,8 +1,9 @@
 package org.humber.project.controllers;
 
 import org.humber.project.domain.Friend;
+import org.humber.project.exceptions.FriendValidationException;
+import org.humber.project.services.FriendValidationService;
 import org.humber.project.services.FriendService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,33 +15,33 @@ import java.util.List;
 public class FriendController {
     private final FriendService friendService;
 
-    @Autowired
-    public FriendController(FriendService friendService) {
+    private final List<FriendValidationService> friendValidationService;
+
+    public FriendController(FriendService friendService, List<FriendValidationService> friendValidationService) {
         this.friendService = friendService;
+        this.friendValidationService = friendValidationService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Friend> addFriend(@PathVariable Long userId, @RequestBody Friend friend) {
-        // Log the received userId and friendUserId for verification
-        System.out.println("Received userId: " + userId);
-        System.out.println("Received friendUserId: " + friend.getFriendUserId());
+    public ResponseEntity<?> addFriend(@PathVariable Long userId, @RequestBody Friend friend) {
+        try {
+            // Validate the friend request before adding
+            for (FriendValidationService validationService : friendValidationService) {
+                validationService.validateFriendRequest(userId, friend.getFriendUserId());
+            }
 
-        // Set the userId from the path variable
-        friend.setUserId(userId);
-        friend.setPending(true);
+            // Set the userId from the path variable
+            friend.setUserId(userId);
+            friend.setPending(true);
 
-        // Set the friendUserId from the request body
-        Long friendUserId = friend.getFriendUserId();
-        friend.setFriendUserId(friendUserId);
+            // Call the service to add the friend
+            Friend addedFriend = friendService.addFriend(friend);
 
-        // Log the friend object to check its values
-        System.out.println("Received Friend object: " + friend);
-
-        // Call the service to add the friend
-        Friend addedFriend = friendService.addFriend(friend);
-
-        // Return the response with the added friend
-        return ResponseEntity.status(HttpStatus.CREATED).body(addedFriend);
+            // Return the response with the added friend
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedFriend);
+        } catch (FriendValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorCode().getMessage());
+        }
     }
 
     @PutMapping("/{friendId}/accept")

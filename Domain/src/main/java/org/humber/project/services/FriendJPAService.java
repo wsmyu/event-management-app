@@ -15,4 +15,6 @@ public interface FriendJPAService {
     List<Friend> getAllFriends(Long userId);
 
     List<Friend> getAllFriendRequests(Long userId);
+
+    boolean areFriends(Long userId1, Long userId2);
 }
