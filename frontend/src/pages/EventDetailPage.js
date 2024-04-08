@@ -218,6 +218,10 @@ const EventDetailPage = () => {
                                                 onClick={() => navigate(`/event/${eventId}/budget-management`)}>
                                             Manage Budget
                                         </button>
+                                        <button className="custom-button" // Add this button for guest management
+                                                 onClick={() => navigate(`/event/${eventId}/guest-management`)}>
+                                            Manage Guests
+                                        </button>
                                         <button className="btn btn-outline-danger"
                                                 onClick={() => setShowDeleteModal(true)}>
                                             Delete Event
