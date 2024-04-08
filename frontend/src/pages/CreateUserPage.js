@@ -4,10 +4,12 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Toast from 'react-bootstrap/Toast';
 
 function CreateUser() {
   const [validated, setValidated] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
@@ -38,6 +40,10 @@ function CreateUser() {
           setErrorMessage(errorMessage);
         } else {
           console.log('User created successfully');
+          setShowSuccessToast(true); // Step 3: Show success toast
+          setTimeout(() => {
+            window.location.href = '/login'; // Step 5: Redirect to login page after 2 seconds
+          }, 2000);
         }
       } catch (error) {
         console.error('Error creating user:', error.message);
@@ -127,6 +133,21 @@ function CreateUser() {
               <Button type="submit" className="btn btn-primary mt-3">Register</Button>
             </div>
           </Form>
+          {/* Success toast */}
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={2000}
+            autohide
+            bg="success"
+            style={{
+              position: 'fixed',
+              top: 20,
+              right: 20,
+            }}
+          >
+            <Toast.Body>Account created successfully! You can now log in with your credentials.</Toast.Body>
+          </Toast>
         </div>
       </div>
     </div>

@@ -70,15 +70,16 @@ const FeedbackPage = () => {
 
   return (
     <div className="container mt-4">
-      <div className="card" style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <div className="card" style={{ maxWidth: '500px', margin: '0 auto' }}>
         <div className="card-body">
-          <h1 className="text-center mb-4">Feedback Page</h1>
+          <h1 className="text-center mb-4">We need your feedback!</h1>
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group>
               <Form.Label>Rating:</Form.Label>
               <div className="d-flex flex-wrap">
                 {[1, 2, 3, 4, 5].map((value) => (
                   <Form.Check
+                    required
                     key={value}
                     type="radio"
                     id={`rating${value}`}
@@ -103,6 +104,7 @@ const FeedbackPage = () => {
                 onChange={handleInputChange}
                 required
                 isInvalid={validated && feedback.message === ''}
+                className="form-control-lg"
               />
               <Form.Control.Feedback type="invalid">Please provide a message.</Form.Control.Feedback>
             </Form.Group>
@@ -117,7 +119,7 @@ const FeedbackPage = () => {
       <Toast
         onClose={() => setShowSuccessToast(false)}
         show={showSuccessToast}
-        delay={2000}
+        delay={2000} // Display for 2 seconds
         autohide
         bg="success"
         style={{

@@ -10,6 +10,7 @@ import org.humber.project.services.UserLoginValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 
@@ -32,10 +33,16 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
-            // Iterate over each UserValidationService in the list and validate the user
+            // Iterate over each UserRegistrationValidationService in the list and validate the user
             for (UserRegistrationValidationService validationService : UserRegistrationValidationService) {
                 validationService.validateUserRegistration(user);
             }
+
+            // Hash the user's password before saving it to the database
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+            // Replace the plain text password with the hashed password
+            user.setPassword(hashedPassword);
 
             // Proceed to create user if validation passes
             User createdUser = userService.createUser(user);
@@ -59,19 +66,22 @@ public class UserController {
                 validationService.validateUserLogin(userLoginRequest.getUsername(), userLoginRequest.getPassword());
             }
 
-            // Check if the provided credentials match a user in the database
-            User user = userService.loginUser(userLoginRequest.getUsername(), userLoginRequest.getPassword());
+            // Retrieve the user from the database based on the provided username
+            User user = userJPAService.getUserByUsername(userLoginRequest.getUsername());
 
+            // Check if the user exists
             if (user != null) {
-                // If login is successful, generate JWT token
-                String token = userService.generateJWTToken(user);
-
-                // Return the JWT token in the response
-                return ResponseEntity.ok().body(token);
-            } else {
-                // If login failed, return unauthorized status
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+                // Compare the hashed password from the database with the hashed version of the provided password
+                if (BCrypt.checkpw(userLoginRequest.getPassword(), user.getPassword())) {
+                    // If login is successful, generate JWT token
+                    String token = userService.generateJWTToken(user);
+                    // Return the JWT token in the response
+                    return ResponseEntity.ok().body(token);
+                }
             }
+
+            // If user does not exist or password does not match, return unauthorized status
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (UserValidationException e) {
             // If validation fails, return bad request status with error message
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
