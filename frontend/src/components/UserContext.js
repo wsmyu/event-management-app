@@ -1,13 +1,15 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { Toast } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [error, setError] = useState(null);
-    const [showLogoutToast, setShowLogoutToast] = useState(false); // State for logout success toast
+    const [showLogoutToast, setShowLogoutToast] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = (user) => {
         setLoggedInUser(user);
@@ -17,10 +19,10 @@ export const UserProvider = ({ children }) => {
     const handleLogout = () => {
         setLoggedInUser(null);
         Cookies.remove('loggedInUser');
-        setShowLogoutToast(true); // Set to show logout success toast
+        setShowLogoutToast(true);
+        navigate('/');
     };
 
-    // Check if there is a logged-in user in cookies on app load
     useEffect(() => {
         const storedUser = Cookies.get('loggedInUser');
         if (storedUser) {
