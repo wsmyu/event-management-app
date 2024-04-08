@@ -96,18 +96,22 @@ const FriendList = () => {
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div>
         <h2>Friend List</h2>
-        <ListGroup style={{ width: 'fit-content' }}>
-          {friends.map(friend => (
-            <ListGroup.Item
-              key={friend.userId !== loggedInUser.userId ? friend.userId : friend.friendUserId}
-              action
-              onClick={() => handleShowUserInfo(friend)}
-              style={{ textDecoration: 'underline', cursor: 'pointer', width: '200px' }}
-            >
-              {friend.username}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+        {friends.length === 0 ? (
+          <p>No friends found</p>
+        ) : (
+          <ListGroup style={{ width: 'fit-content' }}>
+            {friends.map(friend => (
+              <ListGroup.Item
+                key={friend.userId !== loggedInUser.userId ? friend.userId : friend.friendUserId}
+                action
+                onClick={() => handleShowUserInfo(friend)}
+                style={{ textDecoration: 'underline', cursor: 'pointer', width: '200px' }}
+              >
+                {friend.username}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        )}
 
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
