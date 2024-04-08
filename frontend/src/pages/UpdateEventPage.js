@@ -82,7 +82,7 @@ const UpdateEventPage = () => {
             } else {
                 const errorMessage = await response.text();
                 setToastVariant('danger');
-                setToastMessage(`Failed to update event: ${errorMessage}`);
+                setToastMessage(`${errorMessage}`);
                 setShowToast(true);
             }
         } catch (error) {
