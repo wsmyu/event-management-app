@@ -14,6 +14,9 @@ import HomePage from "./pages/HomePage";
 import FriendsPage from "./pages/FriendsPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import FriendRequests from "./pages/FriendRequests";
+import GuestManagementPage from "./pages/GuestManagementPage";
+import InvitationsPage from "./components/InvitationsPage";
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 function App() {
@@ -35,7 +38,13 @@ function App() {
                         <Route path="/search" element={<SearchResultPage />} />
                         <Route path="/user/:id/friends" element={<FriendsPage />} />
                         <Route path="/user/:id/request" element={<FriendRequests />} />
-
+                        <Route path="/event/:eventId/guest-management" element={<GuestManagementPage />} />
+                        <Route path="/invitations" element={<InvitationsPage />} />
+                        <Route path="/invitations" element={
+                             <ProtectedRoute>
+                                <InvitationsPage />
+                              </ProtectedRoute>
+                         } />
                     </Routes>
                 </div>
 

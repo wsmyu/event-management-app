@@ -7,6 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface BudgetJPARepository extends JpaRepository<BudgetEntity, Long> {
-    Optional<BudgetEntity> findByEventId(Long eventId); // Add this line
+    Optional<BudgetEntity> findByEventId(Long eventId);
 
 }

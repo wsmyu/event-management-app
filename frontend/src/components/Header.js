@@ -33,6 +33,8 @@ const Header = () => {
                             <>
                                 <Nav.Link as={Link} to={`/user/${loggedInUser.id}/friends`}>Friend List</Nav.Link>
                                 <Nav.Link as={Link} to={`/user/${loggedInUser.id}/request`}>Friend Request</Nav.Link>
+                                <Nav.Link as={Link} to="/invitations">Invitations</Nav.Link>
+
                             </>
                         ) : (
                             <Nav.Link as={Link} to="/user/login">Login</Nav.Link>

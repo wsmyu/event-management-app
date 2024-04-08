@@ -10,7 +10,11 @@ public enum ErrorCode {
     INVALID_EVENT_TIME("Event end time must after event start time"),
     INVALID_BOOKING_DATE("Booking date must in the future"),
     INVALID_BOOKING_TIME("Booking end time must after booking start time"),
-    BOOKING_DATE_TIME_MISMATCH("Booking date and time do not match event date and time");
+    BOOKING_DATE_TIME_MISMATCH("Booking date and time do not match event date and time"),
+    INVALID_GUEST_DETAILS("Invalid guest details provided"),
+    INVALID_EVENT_ID("Invalid event ID provided"),
+    GUEST_NOT_FOUND("No guests found for the provided event ID"); // New error code
+
     private final String message;
 
     ErrorCode(String message) {
