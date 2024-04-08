@@ -71,7 +71,7 @@ const LoginPage = () => {
                         .then(user => {
                             handleLogin(user);
                             localStorage.setItem('token', token);
-                            setShowSuccessToast(true); // Show success toast
+                            setShowSuccessToast(true);
                             setTimeout(() => {
                                 navigate('/'); // Navigate to home page after 2 seconds
                             }, 2000);

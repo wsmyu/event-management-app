@@ -13,7 +13,7 @@ const FriendRequests = () => {
 
   useEffect(() => {
     fetchFriendRequests();
-  }, []);
+  }, [loggedInUser]);
 
   const fetchFriendRequests = () => {
     if (!loggedInUser) {

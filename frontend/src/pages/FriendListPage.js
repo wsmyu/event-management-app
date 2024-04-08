@@ -12,7 +12,7 @@ const FriendList = () => {
 
   useEffect(() => {
     fetchFriends();
-  }, []);
+  }, [loggedInUser]);
 
   const fetchFriends = () => {
     if (!loggedInUser) {

@@ -19,9 +19,14 @@ public class FriendRequestValidation implements FriendValidationService {
 
     @Override
     public void validateFriendRequest(Long userId, Long friendUserId) {
+        // Check if the user send request to himself
+        if (userId.equals(friendUserId)) {
+            throw new FriendValidationException(ErrorCode.INVALID_FRIEND_REQUEST);
+        }
+
         // Check if the users are already friends
         if (friendJPAService.areFriends(userId, friendUserId)) {
-            throw new FriendValidationException(ErrorCode.INVALID_FRIEND_REQUEST);
+            throw new FriendValidationException(ErrorCode.REPEATED_FRIEND_REQUEST);
         }
     }
 }
