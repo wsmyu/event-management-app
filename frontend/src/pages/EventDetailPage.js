@@ -24,11 +24,12 @@ const EventDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [venueBookingDateTimeMatch, setVenueBookingDateTimeMatch] = useState(true);
 
-    const showSuccessMessage = (message) => {
+    const showCustomMessage = (message, variant = 'success') => {
         setShowToast(true);
-        setToastVariant('success');
+        setToastVariant(variant);
         setToastMessage(message);
     };
+
     const handleDelete = async () => {
         try {
             setShowDeleteModal(false);
@@ -38,7 +39,7 @@ const EventDetailPage = () => {
             if (response.ok) {
                 // Scroll to the top of the page
                 window.scrollTo(0, 0);
-                showSuccessMessage('Event deleted successfully!');
+                showCustomMessage('Event deleted successfully!');
                 // Delay navigation after showing the toast
                 setTimeout(() => {
                     navigate('/');
@@ -130,7 +131,39 @@ const EventDetailPage = () => {
 
     }, [eventId, event?.eventDate, event?.eventEndTime, event?.eventStartTime, venueBooking?.bookingDate, venueBooking?.bookingStartTime, venueBooking?.bookingEndTime]);
 
+const handleJoinEvent = () => {
+  // Ensure there is a logged-in user and the user is not the event creator
+  if (loggedInUser && loggedInUser.userId !== event.userId) {
+    fetch(`http://localhost:8080/api/guests/${event.userId}/manage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${loggedInUser.token}`,
+      },
+      body: JSON.stringify({
+        userId: loggedInUser.userId,
+        eventId: Number(eventId),
+        status: 'accepted', // Directly set status to accepted
+      }),
+    })
+         .then(response => {
+            if (!response.ok) {
 
+                return response.text().then(text => {
+                throw new Error(text);
+                });
+            }
+            return response.json();
+          })
+          .then(() => {
+            showCustomMessage('Successfully joined the event!', 'success');
+          })
+          .catch(error => {
+            console.error('Error joining the event:', error);
+            showCustomMessage(error.message, 'danger');
+          });
+      }
+    };
     return (
         <div className="container">
             {loading && (
@@ -230,9 +263,11 @@ const EventDetailPage = () => {
                                     </div>
                                 ) : (
                                     <div className="d-flex justify-content-center m-3 ">
-                                        <button className="custom-button">
-                                            Join Event
-                                        </button>
+                                       {loggedInUser && loggedInUser.userId !== event.userId && (
+                                         <button className="custom-button" onClick={handleJoinEvent}>
+                                           Join Event
+                                         </button>
+                                       )}
                                     </div>
                                 )
                             }

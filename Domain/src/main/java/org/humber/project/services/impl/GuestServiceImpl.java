@@ -30,18 +30,26 @@ public class GuestServiceImpl implements GuestService {
         return guestJPAService.manageGuest(guest);
 
     }
-
     @Override
     public List<Guest> getGuestListByEventId(Long eventId) {
         if (eventId == null) {
             throw new GuestValidationException(ErrorCode.INVALID_EVENT_ID);
         }
-        List<Guest> guests = guestJPAService.getGuestListByEventId(eventId);
-        if (guests.isEmpty()) {
-            throw new GuestValidationException(ErrorCode.GUEST_NOT_FOUND);
-        }
-        return guests;
+        return guestJPAService.getGuestListByEventId(eventId);
+        // No exception is thrown if the guest list is empty, allowing for validation logic to handle this scenario
     }
+
+//    @Override
+//    public List<Guest> getGuestListByEventId(Long eventId) {
+//        if (eventId == null) {
+//            throw new GuestValidationException(ErrorCode.INVALID_EVENT_ID);
+//        }
+//        List<Guest> guests = guestJPAService.getGuestListByEventId(eventId);
+//        if (guests.isEmpty()) {
+//            throw new GuestValidationException(ErrorCode.GUEST_NOT_FOUND);
+//        }
+//        return guests;
+//    }
 
     @Override
     public Guest updateGuestStatus(Long guestId, String status) {

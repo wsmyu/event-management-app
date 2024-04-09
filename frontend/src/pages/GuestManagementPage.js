@@ -1,6 +1,9 @@
-import React, { useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
+import CustomToast from "../components/CustomToast";
+
+import { Button, Form, ListGroup, Container, Row, Col, Card, InputGroup, FormControl } from 'react-bootstrap';
 
 const GuestManagementPage = () => {
   const { eventId } = useParams();
@@ -8,123 +11,130 @@ const GuestManagementPage = () => {
   const [searchUsername, setSearchUsername] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [guestList, setGuestList] = useState([]);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success');
+
+  const showCustomMessage = (message, variant = 'success') => {
+      setToastMessage(message);
+      setToastVariant(variant);
+      setShowToast(true);
+    };
 
   const handleSearchUser = () => {
     fetch(`http://localhost:8080/api/users/search?username=${searchUsername}`, {
-      headers: {
-        'Authorization': `Bearer ${loggedInUser.token}`,
-      },
+      headers: { 'Authorization': `Bearer ${loggedInUser.token}` },
     })
-      .then(response => response.json())
-      .then(data => {
-        setSearchResult(data);
-      })
-      .catch(error => console.error('Error searching user:', error));
-  };
+      .then((response) => response.json())
+      .then(setSearchResult)
+          .catch((error) => {
+            console.error('Error search:', error);
+            showCustomMessage(error.message, "danger");
+          });  };
 
   const handleSendInvitation = (userId) => {
-    // Adjust the request payload to match the API expectation
-    fetch(`http://localhost:8080/api/guests/manage`, {
+    fetch(`http://localhost:8080/api/guests/${loggedInUser.userId}/manage`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${loggedInUser.token}`,
-      },
-      body: JSON.stringify({
-        userId: userId,
-        eventId: Number(eventId),
-        status: 'pending',
-      }),
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${loggedInUser.token}` },
+      body: JSON.stringify({ userId: userId, eventId: Number(eventId), status: 'pending' }),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to send invitation');
-      }
-      return response.json();
-    })
-    .then(() => {
-      // Refresh guest list or show success message
-      fetchGuestList();
-    })
-    .catch(error => console.error('Error sending invitation:', error));
-  };
-const fetchUserDetails = async (userId) => {
-  try {
+      .then((response) => {
+                    if (!response.ok) {
+
+                        return response.text().then(text => {
+                        throw new Error(text);
+                        });
+                    }
+        showCustomMessage("Invitation sent successfully!");
+        return response.json();
+      })
+      .then(() => fetchGuestList())
+          .catch((error) => {
+            console.error('Error sending invitation:', error);
+            showCustomMessage(error.message, "danger");
+          });
+      };
+
+  const fetchUserDetails = async (userId) => {
     const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${loggedInUser.token}`,
-      },
+      headers: { 'Authorization': `Bearer ${loggedInUser.token}` },
     });
-    if (!response.ok) {
-      throw new Error('Failed to fetch user details');
-    }
+    if (!response.ok) throw new Error('Failed to fetch user details');
     const userDetails = await response.json();
     return userDetails.username;
-  } catch (error) {
-    console.error('Error fetching user details:', error);
-    return 'Unknown'; // Fallback username
-  }
-};
+  };
 
- const fetchGuestList = async () => {
-   try {
-     const response = await fetch(`http://localhost:8080/api/guests/${eventId}`, {
-       headers: {
-         'Authorization': `Bearer ${loggedInUser.token}`,
-       },
-     });
-     if (!response.ok) {
-       throw new Error('Failed to fetch guest list');
-     }
-     const guests = await response.json();
+  const fetchGuestList = async () => {
+    const response = await fetch(`http://localhost:8080/api/guests/${eventId}`, {
+      headers: { 'Authorization': `Bearer ${loggedInUser.token}` },
+    });
+    if (!response.ok) throw new Error('Failed to fetch guest list');
+    const guests = await response.json();
 
-     // Fetch usernames for each guest
-     const guestsWithUsernames = await Promise.all(guests.map(async (guest) => {
-       const username = await fetchUserDetails(guest.userId);
-       return { ...guest, username }; // Append username to the guest object
-     }));
+    const guestsWithUsernames = await Promise.all(
+      guests.map(async (guest) => {
+        const username = await fetchUserDetails(guest.userId);
+        return { ...guest, username };
+      })
+    );
 
-     setGuestList(guestsWithUsernames);
-   } catch (error) {
-     console.error('Error fetching guest list:', error);
-   }
- };
+    setGuestList(guestsWithUsernames);
+  };
 
-
-useEffect(() => {
-  if (loggedInUser) {
-    fetchGuestList();
-  }
-}, [loggedInUser]); // Add loggedInUser as a dependency
+  useEffect(() => {
+    if (loggedInUser) {
+      fetchGuestList();
+    }
+  }, [loggedInUser, eventId]);
 
   return (
-    <div>
-      <h2>Guest Management for Event {eventId}</h2>
-      <div>
-        <label>Search by Username:</label>
-        <input type="text" value={searchUsername} onChange={(e) => setSearchUsername(e.target.value)} />
-        <button onClick={handleSearchUser}>Search</button>
-      </div>
-      <div>
-        <h3>Search Results</h3>
-        <ul>
-          {searchResult.map(user => (
-            <li key={user.userId}>
-              {user.username}
-              <button onClick={() => handleSendInvitation(user.userId)}>Invite as Guest</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-<div>
-  <h3>Invited Guests</h3>
-<ul>
-  {guestList.map(guest => (
-    <li key={guest.guestId}>{guest.username} - {guest.status}</li>
-  ))}
-</ul>
-</div>
-    </div>
+    <Container fluid="md" className="my-4">
+     <CustomToast showToast={showToast} setShowToast={setShowToast} toastMessage={toastMessage} toastVariant={toastVariant} />
+
+      <Row className="justify-content-md-center">
+        <Col md={8}>
+          <h2>Guest Management for Event {eventId}</h2>
+          <InputGroup className="mb-3">
+            <FormControl
+              placeholder="Search by Username"
+              aria-label="Search by Username"
+              value={searchUsername}
+              onChange={(e) => setSearchUsername(e.target.value)}
+            />
+            <Button variant="outline-secondary" id="button-addon2" onClick={handleSearchUser}>
+              Search
+            </Button>
+          </InputGroup>
+
+          <h3>User Search Result</h3>
+          {searchResult && searchResult.length > 0 ? (
+            <ListGroup>
+              {searchResult.map((user) => (
+                <ListGroup.Item key={user.userId} className="d-flex justify-content-between align-items-center">
+                  {user.username}
+                  <Button variant="primary" onClick={() => handleSendInvitation(user.userId)}>Invite</Button>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <p>No results found.</p>
+          )}
+
+          <h3 className="mt-4">Invited Guests</h3>
+          {guestList && guestList.length > 0 ? (
+            <ListGroup>
+              {guestList.map((guest) => (
+                <ListGroup.Item key={guest.guestId}>
+                  {guest.username} - {guest.status}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <p>No guests found.</p>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
