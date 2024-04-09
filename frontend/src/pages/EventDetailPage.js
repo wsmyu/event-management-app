@@ -158,6 +158,10 @@ const EventDetailPage = () => {
                                             <Accordion.Body>
                                                 <Row>
                                                     <Col md={4}>
+                                                        <img src={venue.imageUrl} className="rounded w-100 mb-3"
+                                                             alt="venue image"/>
+                                                    </Col>
+                                                    <Col md={4}>
                                                         <p><strong>Booking Date: </strong> {venueBooking.bookingDate}
                                                         </p>
                                                         <p><strong>Booking Start
@@ -170,10 +174,6 @@ const EventDetailPage = () => {
                                                         </p>
                                                     </Col>
                                                     <Col md={4}>
-                                                        <img src={venue.imageUrl} className="rounded w-100 mb-3"
-                                                             alt="venue image"/>
-                                                    </Col>
-                                                    <Col md={4}>
                                                         {!venueBookingDateTimeMatch && (
                                                             <Alert key="info" variant="info" className="w-100">
                                                                 *Please ensure the booking date and time match the event
@@ -181,6 +181,7 @@ const EventDetailPage = () => {
                                                             </Alert>
                                                         )}
                                                     </Col>
+
                                                 </Row>
                                             </Accordion.Body>
                                         </Accordion.Item>
