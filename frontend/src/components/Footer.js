@@ -25,7 +25,7 @@ function Footer() {
                     <div className="col-md-4">
                         <h5>Others</h5>
                         <ul className="list-unstyled">
-                            <li><Link to="/user/request" className="text-white">Feedback</Link></li>
+                            <li><Link to="/feedback" className="text-white">Feedback</Link></li>
                         </ul>
                     </div>
                 </div>
