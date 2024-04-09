@@ -16,9 +16,6 @@ const CustomToast = ({ showToast, setShowToast, toastVariant, toastMessage }) =>
             autohide
             className={`bg-${toastVariant}`}
         >
-            <Toast.Header closeButton={false}>
-                <strong className="mr-auto">Notification</strong>
-            </Toast.Header>
             <Toast.Body className="toast-body">{toastMessage}</Toast.Body>
         </Toast>
         </ToastContainer>

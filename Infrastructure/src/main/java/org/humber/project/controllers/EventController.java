@@ -17,12 +17,10 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
     private final EventService eventService;
-    private final BudgetService budgetService;
 
     @Autowired
-    public EventController(EventService eventService, BudgetService budgetService) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.budgetService = budgetService;
     }
 
     @PostMapping("")
