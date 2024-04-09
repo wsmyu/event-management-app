@@ -4,6 +4,7 @@ import EventForm from "../components/EventForm";
 import CustomToast from "../components/CustomToast";
 import SuccessPage from "./SuccessPage";
 import {formatDate, formatTime} from "../utils";
+import {useUser} from "../components/UserContext";
 
 const UpdateEventPage = () => {
     const {eventId} = useParams();
@@ -22,6 +23,7 @@ const UpdateEventPage = () => {
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
     const [showSuccessPage, setShowSuccessPage] = useState(false);
+    const loggedInUser = useUser().loggedInUser;
 
     useEffect(() => {
         // Fetch event details from the backend when the component mounts
@@ -82,7 +84,7 @@ const UpdateEventPage = () => {
             } else {
                 const errorMessage = await response.text();
                 setToastVariant('danger');
-                setToastMessage(`Failed to update event: ${errorMessage}`);
+                setToastMessage(`${errorMessage}`);
                 setShowToast(true);
             }
         } catch (error) {
@@ -97,28 +99,35 @@ const UpdateEventPage = () => {
                 <div>
                     {event && !showSuccessPage && (
                         <>
-                            <h1>Update Event</h1>
+                            { loggedInUser == null ||loggedInUser.userId  !== event.userId ? (
+                                <div>
+                                    <p>You are not permitted to access this page.</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <h1>Update Event</h1>
 
-                            {/* Success Toast */}
-                            <CustomToast
-                                showToast={showToast}
-                                setShowToast={setShowToast}
-                                toastVariant={toastVariant}
-                                toastMessage={toastMessage}
-                            />
-                            <EventForm
-                                event={event}
-                                handleChange={handleChange}
-                                handleSubmit={handleSubmit}
-                                buttonText="Update Event"
-                            />
+                                    {/* Success Toast */}
+                                    <CustomToast
+                                        showToast={showToast}
+                                        setShowToast={setShowToast}
+                                        toastVariant={toastVariant}
+                                        toastMessage={toastMessage}
+                                    />
+                                    <EventForm
+                                        event={event}
+                                        handleChange={handleChange}
+                                        handleSubmit={handleSubmit}
+                                        buttonText="Update Event"
+                                    />
+                                </>
+                            )}
                         </>
                     )}
                 </div>
                 {showSuccessPage && (
                     <SuccessPage eventId={eventId} message="Event updated successfully"/>
                 )}
-
             </div>
         </div>
     );

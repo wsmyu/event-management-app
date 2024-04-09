@@ -34,7 +34,7 @@ public class EventController {
             // If event validation fails, return a 400 Bad Request response with an error message
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ public class EventController {
             Event updatedEvent = eventService.updateEventInfo(eventId, event);
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedEvent);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create event: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

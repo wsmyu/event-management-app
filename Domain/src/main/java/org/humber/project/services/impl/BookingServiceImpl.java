@@ -52,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingDate(bookingRequest.getBookingDate());
         booking.setBookingStartTime(bookingRequest.getBookingStartTime());
         booking.setBookingEndTime(bookingRequest.getBookingEndTime());
-        booking.setBookingCreationDate(LocalDate.now());
+
         return bookingJPAService.saveBooking(booking);
     }
 
