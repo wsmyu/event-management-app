@@ -62,4 +62,10 @@ public class GuestServiceImpl implements GuestService {
         return guestJPAService.getInvitationsByUserId(userId);
     }
 
+    @Override
+    public List<Long> getAcceptedEventIdsByUserId(Long userId) {
+        return guestJPAService.getAcceptedEventIdsByUserId(userId);
+    }
+
+
 }

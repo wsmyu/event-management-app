@@ -8,5 +8,6 @@ public interface GuestService {
     List<Guest> getGuestListByEventId(Long eventId);
     Guest updateGuestStatus(Long guestId, String status);
     List<Guest> getInvitationsByUserId(Long userId);
+    List<Long> getAcceptedEventIdsByUserId(Long userId);
 
 }

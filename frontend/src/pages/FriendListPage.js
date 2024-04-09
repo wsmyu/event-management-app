@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../components/UserContext';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { Link } from 'react-router-dom';
+import { Button, Modal, ListGroup, Container, Toast } from 'react-bootstrap';
 
 const FriendList = () => {
   const { loggedInUser } = useUser();
   const [friends, setFriends] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [userEvents, setUserEvents] = useState([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [friendToDelete, setFriendToDelete] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   useEffect(() => {
     fetchFriends();
@@ -34,14 +37,11 @@ const FriendList = () => {
         }
       })
       .then(async friends => {
-        console.log('Friends:', friends); // Log the response data
+        console.log('Friends:', friends);
 
-        // Fetch user information for each friend
         const friendsWithUserInfo = await Promise.all(friends.map(async friend => {
-          // Determine which id to use as the key
           const key = friend.userId !== loggedInUser.userId ? friend.userId : friend.friendUserId;
 
-          // Fetch user information for the friend
           const userInfoResponse = await fetch(`http://localhost:8080/api/users/${key}`, {
             headers: {
               'Authorization': `Bearer ${loggedInUser.token}`
@@ -50,7 +50,7 @@ const FriendList = () => {
 
           if (userInfoResponse.ok) {
             const userInfo = await userInfoResponse.json();
-            friend.username = userInfo.username; // Add username to the friend object
+            friend.username = userInfo.username;
           } else {
             console.error('Failed to fetch user information for friend:', key);
           }
@@ -74,8 +74,9 @@ const FriendList = () => {
       if (response.ok) {
         const userInfo = await response.json();
         if (userInfo.length > 0) {
-          setSelectedUser(userInfo[0]); // Assuming the first user in the list is the desired user
+          setSelectedUser(userInfo[0]);
           setShowModal(true);
+          fetchAcceptedEventIds(userInfo[0].userId);
         } else {
           console.error('User not found with username:', friend.username);
         }
@@ -87,10 +88,80 @@ const FriendList = () => {
     }
   };
 
+  const fetchAcceptedEventIds = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/guests/user/${userId}/accepted-event`, {
+        headers: {
+          'Authorization': `Bearer ${loggedInUser.token}`
+        }
+      });
+      if (response.ok) {
+        const acceptedEventIds = await response.json();
+        fetchUserEvents(acceptedEventIds);
+      } else {
+        console.error('Failed to fetch accepted event IDs for user:', userId);
+      }
+    } catch (error) {
+      console.error('Error fetching accepted event IDs for user:', userId, error);
+    }
+  };
+
+  const fetchUserEvents = async (acceptedEventIds) => {
+    const eventPromises = acceptedEventIds.map(async (eventId) => {
+      const response = await fetch(`http://localhost:8080/api/events/${eventId}`, {
+        headers: {
+          'Authorization': `Bearer ${loggedInUser.token}`
+        }
+      });
+      if (response.ok) {
+        const event = await response.json();
+        return event;
+      } else {
+        console.error('Failed to fetch event details for event ID:', eventId);
+        return null;
+      }
+    });
+    const events = await Promise.all(eventPromises);
+    setUserEvents(events.filter(event => event !== null));
+  };
+
+  const handleDeleteFriend = async (friendId) => {
+    setFriendToDelete(friendId);
+    setShowConfirmationModal(true);
+  };
+
+  const confirmDeleteFriend = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/users/${loggedInUser.userId}/friends/${friendToDelete}/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${loggedInUser.token}`
+        }
+      });
+      if (response.ok) {
+        // Remove the friend from the list
+        setFriends(prevFriends => prevFriends.filter(friend => friend.friendId !== friendToDelete));
+        setShowSuccessToast(true);
+      } else {
+        console.error('Failed to delete friend:', friendToDelete);
+      }
+      setShowConfirmationModal(false);
+    } catch (error) {
+      console.error('Error deleting friend:', error);
+    }
+  };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  if (!loggedInUser) {
+    return (
+        <div className="container mt-4">
+          <p className="text-center">Please login to access your friend list.</p>
+        </div>
+    );
+   }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -99,15 +170,17 @@ const FriendList = () => {
         {friends.length === 0 ? (
           <p>No friends found</p>
         ) : (
-          <ListGroup style={{ width: 'fit-content' }}>
+          <ListGroup style={{ width: '500px' }}>
             {friends.map(friend => (
               <ListGroup.Item
                 key={friend.userId !== loggedInUser.userId ? friend.userId : friend.friendUserId}
-                action
-                onClick={() => handleShowUserInfo(friend)}
-                style={{ textDecoration: 'underline', cursor: 'pointer', width: '200px' }}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
-                {friend.username}
+                <span>{friend.username}</span>
+                <div>
+                  <Button variant="primary" size="sm" onClick={() => handleShowUserInfo(friend)}>Info</Button>
+                  <Button variant="danger" size="sm" onClick={() => handleDeleteFriend(friend.friendId)}>Delete</Button>
+                </div>
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -122,6 +195,14 @@ const FriendList = () => {
               <>
                 <p>User ID: {selectedUser.userId}</p>
                 <p>Username: {selectedUser.username}</p>
+                <p>Joined Events:</p>
+                <ul>
+                  {userEvents.map(event => (
+                    <li key={event.eventId}>
+                      <Link to={`/event/${event.eventId}`}>{event.eventName}</Link>
+                    </li>
+                  ))}
+                </ul>
               </>
             )}
           </Modal.Body>
@@ -129,6 +210,37 @@ const FriendList = () => {
             <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
           </Modal.Footer>
         </Modal>
+
+        {/* Confirmation Modal */}
+        <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to delete this friend?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowConfirmationModal(false)}>Cancel</Button>
+            <Button variant="danger" onClick={confirmDeleteFriend}>Delete</Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Success Toast */}
+        <Toast
+          onClose={() => setShowSuccessToast(false)}
+          show={showSuccessToast}
+          delay={3000}
+          autohide
+          bg="success"
+          style={{
+            position: 'fixed',
+            top: 20,
+            right: 20,
+          }}
+        >
+          <Toast.Header closeButton={false}>
+            <strong className="me-auto">Success</strong>
+          </Toast.Header>
+          <Toast.Body>Friend deleted successfully.</Toast.Body>
+        </Toast>
       </div>
     </div>
   );

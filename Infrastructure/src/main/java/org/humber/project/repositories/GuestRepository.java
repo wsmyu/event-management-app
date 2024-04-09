@@ -9,5 +9,5 @@ import java.util.List;
 public interface GuestRepository extends JpaRepository<GuestEntity, Long> {
     List<GuestEntity> findByEvent_EventId(Long eventId);
     List<GuestEntity> findByUser_UserId(Long userId);
-
+    List<GuestEntity> findByUser_UserIdAndStatus(Long userId, String status);
 }

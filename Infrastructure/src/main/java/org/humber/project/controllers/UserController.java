@@ -26,8 +26,8 @@ public class UserController {
     public UserController(UserService userService, UserJPAService userJPAService, List<UserRegistrationValidationService> userRegistrationValidationService, List<UserLoginValidationService> userLoginValidationService) {
         this.userService = userService;
         this.userJPAService = userJPAService;
-        UserRegistrationValidationService = userRegistrationValidationService;
-        UserLoginValidationService = userLoginValidationService;
+        this.UserRegistrationValidationService = userRegistrationValidationService;
+        this.UserLoginValidationService = userLoginValidationService;
     }
 
     @PostMapping("/create")

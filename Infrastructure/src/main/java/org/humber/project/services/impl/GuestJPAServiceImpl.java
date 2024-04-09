@@ -52,5 +52,13 @@ public class GuestJPAServiceImpl implements GuestJPAService {
                 .map(guestEntityTransformer::transformToGuest)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<Long> getAcceptedEventIdsByUserId(Long userId) {
+        // Fetch all guests where userId = target user's id and status = "accepted"
+        return guestRepository.findByUser_UserIdAndStatus(userId, "accepted").stream()
+                .map(guestEntity -> guestEntity.getEvent().getEventId())
+                .collect(Collectors.toList());
+    }
+
 
 }

@@ -73,7 +73,7 @@ const LoginPage = () => {
                             localStorage.setItem('token', token);
                             setShowSuccessToast(true);
                             setTimeout(() => {
-                                navigate('/'); // Navigate to home page after 2 seconds
+                                navigate('/');
                             }, 2000);
                         })
                         .catch(error => {
@@ -146,7 +146,7 @@ const LoginPage = () => {
             <Toast
                 onClose={() => setShowSuccessToast(false)}
                 show={showSuccessToast}
-                delay={2000} // Display for 2 seconds
+                delay={2000}
                 autohide
                 bg="success"
                 style={{

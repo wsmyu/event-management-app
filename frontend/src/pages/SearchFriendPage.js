@@ -57,7 +57,6 @@ const SearchFriendPage = () => {
       .then(response => {
         if (response.ok) {
           setShowSuccessToast(true);
-          // You might want to update the UI or state to reflect the friend addition
         } else {
           response.text().then(text => {
             setErrorMessage(text);
@@ -132,11 +131,11 @@ const SearchFriendPage = () => {
         show={showSuccessToast}
         delay={3000}
         autohide
+        bg="success"
         style={{
           position: 'fixed',
           top: 20,
           right: 20,
-          backgroundColor: '#4CAF50', // Green color
         }}
       >
         <Toast.Header closeButton={false}>
