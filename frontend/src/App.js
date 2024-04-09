@@ -17,7 +17,6 @@ import SearchResultPage from "./pages/SearchResultPage";
 import FriendRequests from "./pages/FriendRequests";
 import GuestManagementPage from "./pages/GuestManagementPage";
 import InvitationsPage from "./components/InvitationsPage";
-import ProtectedRoute from './components/ProtectedRoute';
 import FeedbackPage from "./pages/FeedbackPage";
 import Footer from "./components/Footer";
 
@@ -43,9 +42,7 @@ function App() {
                         <Route path="/event/:eventId/guest-management" element={<GuestManagementPage />} />
                         <Route path="/invitations" element={<InvitationsPage />} />
                         <Route path="/invitations" element={
-                             <ProtectedRoute>
                                 <InvitationsPage />
-                              </ProtectedRoute>
                          } />
                         <Route path="/user/friends" element={<FriendListPage />} />
                         <Route path="/user/search-friend" element={<SearchFriendPage />} />

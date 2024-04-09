@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
-import CustomToast from "../components/CustomToast";
-
 import { Button, Form, ListGroup, Container, Row, Col, Card, InputGroup, FormControl } from 'react-bootstrap';
 
 const GuestManagementPage = () => {
@@ -11,15 +9,6 @@ const GuestManagementPage = () => {
   const [searchUsername, setSearchUsername] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [guestList, setGuestList] = useState([]);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastVariant, setToastVariant] = useState('success');
-
-  const showCustomMessage = (message, variant = 'success') => {
-      setToastMessage(message);
-      setToastVariant(variant);
-      setShowToast(true);
-    };
 
   const handleSearchUser = () => {
     fetch(`http://localhost:8080/api/users/search?username=${searchUsername}`, {
@@ -27,10 +16,8 @@ const GuestManagementPage = () => {
     })
       .then((response) => response.json())
       .then(setSearchResult)
-          .catch((error) => {
-            console.error('Error search:', error);
-            showCustomMessage(error.message, "danger");
-          });  };
+      .catch((error) => console.error('Error searching user:', error));
+  };
 
   const handleSendInvitation = (userId) => {
     fetch(`http://localhost:8080/api/guests/${loggedInUser.userId}/manage`, {
@@ -39,21 +26,12 @@ const GuestManagementPage = () => {
       body: JSON.stringify({ userId: userId, eventId: Number(eventId), status: 'pending' }),
     })
       .then((response) => {
-                    if (!response.ok) {
-
-                        return response.text().then(text => {
-                        throw new Error(text);
-                        });
-                    }
-        showCustomMessage("Invitation sent successfully!");
+        if (!response.ok) throw new Error('Failed to send invitation');
         return response.json();
       })
       .then(() => fetchGuestList())
-          .catch((error) => {
-            console.error('Error sending invitation:', error);
-            showCustomMessage(error.message, "danger");
-          });
-      };
+      .catch((error) => console.error('Error sending invitation:', error));
+  };
 
   const fetchUserDetails = async (userId) => {
     const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
@@ -71,6 +49,7 @@ const GuestManagementPage = () => {
     if (!response.ok) throw new Error('Failed to fetch guest list');
     const guests = await response.json();
 
+    // Ensuring we retain the logic to fetch usernames for each guest
     const guestsWithUsernames = await Promise.all(
       guests.map(async (guest) => {
         const username = await fetchUserDetails(guest.userId);
@@ -89,8 +68,6 @@ const GuestManagementPage = () => {
 
   return (
     <Container fluid="md" className="my-4">
-     <CustomToast showToast={showToast} setShowToast={setShowToast} toastMessage={toastMessage} toastVariant={toastVariant} />
-
       <Row className="justify-content-md-center">
         <Col md={8}>
           <h2>Guest Management for Event {eventId}</h2>
