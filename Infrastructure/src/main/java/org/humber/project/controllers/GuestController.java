@@ -58,4 +58,11 @@ public class GuestController {
         return ResponseEntity.ok(invitations);
     }
 
+    @GetMapping("/user/{userId}/accepted-event")
+    public ResponseEntity<List<Long>> getAcceptedEventIdsByUserId(@PathVariable Long userId) {
+        List<Long> acceptedEventIds = guestService.getAcceptedEventIdsByUserId(userId);
+        return ResponseEntity.ok(acceptedEventIds);
+    }
+
+
 }

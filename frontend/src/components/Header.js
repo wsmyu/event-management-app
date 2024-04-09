@@ -42,9 +42,6 @@ const Header = () => {
                                 </NavDropdown>
                             </>
                         )}
-                        {loggedInUser && (
-                            <Nav.Link as={Link} to={`/feedback`}>Feedback</Nav.Link>
-                        )}
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control

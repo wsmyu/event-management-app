@@ -40,9 +40,9 @@ function CreateUser() {
           setErrorMessage(errorMessage);
         } else {
           console.log('User created successfully');
-          setShowSuccessToast(true); // Step 3: Show success toast
+          setShowSuccessToast(true);
           setTimeout(() => {
-            window.location.href = '/login'; // Step 5: Redirect to login page after 2 seconds
+            window.location.href = '/login';
           }, 2000);
         }
       } catch (error) {

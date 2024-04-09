@@ -9,7 +9,7 @@ const FeedbackPage = () => {
   const { loggedInUser } = useUser();
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({
-    userId: loggedInUser.userId,
+    userId: loggedInUser ? loggedInUser.userId : null,
     message: '',
     rating: 0,
   });
@@ -35,7 +35,7 @@ const FeedbackPage = () => {
     }
     setValidated(true);
 
-    if (form.checkValidity()) {
+    if (form.checkValidity() && loggedInUser) {
       fetch('http://localhost:8080/api/feedback/submit', {
         method: 'POST',
         headers: {
@@ -67,6 +67,14 @@ const FeedbackPage = () => {
         });
     }
   };
+
+  if (!loggedInUser) {
+    return (
+      <div className="container mt-4">
+        <p className="text-center">Please login to leave your feedback.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
@@ -119,7 +127,7 @@ const FeedbackPage = () => {
       <Toast
         onClose={() => setShowSuccessToast(false)}
         show={showSuccessToast}
-        delay={2000} // Display for 2 seconds
+        delay={2000}
         autohide
         bg="success"
         style={{

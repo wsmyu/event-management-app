@@ -100,7 +100,7 @@ const FriendRequests = () => {
       .then(response => {
         if (response.ok) {
           fetchFriendRequests(); // Refresh friend requests after deleting
-          setShowRejectToast(true); // Show reject toast
+          setShowRejectToast(true);
         } else {
           console.error('Failed to delete friend request:', response.statusText);
         }
@@ -130,6 +130,13 @@ const FriendRequests = () => {
     setShowModal(false);
   };
 
+  if (!loggedInUser) {
+      return (
+          <div className="container mt-4">
+            <p className="text-center">Please login to access your friend request.</p>
+          </div>
+      );
+  }
   return (
     <Container>
       <Row className="justify-content-center">
@@ -158,7 +165,7 @@ const FriendRequests = () => {
               ))}
             </ListGroup>
           )}
-          {/* Popup box code */}
+          {/* show user information */}
           <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
               <Modal.Title>User Information</Modal.Title>
@@ -176,16 +183,17 @@ const FriendRequests = () => {
         </Col>
       </Row>
 
+      {/* Friend request accepted toast */}
       <Toast
         onClose={() => setShowSuccessToast(false)}
         show={showSuccessToast}
         delay={3000}
         autohide
+        bg="success"
         style={{
           position: 'fixed',
           top: 20,
           right: 20,
-          backgroundColor: '#4CAF50',
         }}
       >
         <Toast.Header closeButton={false}>
@@ -194,6 +202,7 @@ const FriendRequests = () => {
         <Toast.Body>Friend request accepted.</Toast.Body>
       </Toast>
 
+      {/* Friend request rejected toast */}
       <Toast
         onClose={() => setShowRejectToast(false)}
         show={showRejectToast}
