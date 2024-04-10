@@ -14,4 +14,6 @@ public interface EventService {
     List<Event> filterEventsByCity(String city);
     List<Event> filterEventsByDate(String timeFrame);
     List<Event> searchEventsWithFilters(String eventName, String city, String eventType, String timeFrame);
+    List<Event> findEventsByUserId(Long userId);
+
 }
