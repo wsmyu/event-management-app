@@ -4,7 +4,6 @@ package org.humber.project.controllers;
 import org.humber.project.domain.Event;
 import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.exceptions.EventValidationException;
-import org.humber.project.services.BudgetService;
 import org.humber.project.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,4 +89,13 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete event");
         }
     }
+    @GetMapping("/user/{userId}/events")
+    public ResponseEntity<List<Event>> getEventsByUserId(@PathVariable Long userId) {
+        List<Event> events = eventService.findEventsByUserId(userId);
+        if(events.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(events);
+    }
+
 }

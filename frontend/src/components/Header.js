@@ -40,6 +40,8 @@ const Header = () => {
                                     <NavDropdown.Item as={Link} to={`/user/search-friend`}>Search for
                                         Friend</NavDropdown.Item>
                                 </NavDropdown>
+                                <Nav.Link as={Link} to={`/task`}>Task</Nav.Link>
+
                             </>
                         )}
                     </Nav>

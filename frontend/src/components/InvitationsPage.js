@@ -21,10 +21,10 @@ const InvitationsPage = () => {
         throw new Error(`Failed to fetch event details for event ID: ${eventId}`);
       }
       const data = await response.json();
-      return data.eventName; // Assuming your event object has an eventName property
+      return data.eventName;
     } catch (error) {
       console.error('Error fetching event details:', error);
-      return 'Unknown Event'; // Fallback event name
+      return 'Unknown Event';
     }
   };
 

@@ -19,7 +19,7 @@ import GuestManagementPage from "./pages/GuestManagementPage";
 import InvitationsPage from "./components/InvitationsPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import Footer from "./components/Footer";
-
+import TaskManagementPage from "./pages/TaskManagementPage";
 
 function App() {
     return (
@@ -41,9 +41,7 @@ function App() {
                         <Route path="/user/:id/request" element={<FriendRequests />} />
                         <Route path="/event/:eventId/guest-management" element={<GuestManagementPage />} />
                         <Route path="/invitations" element={<InvitationsPage />} />
-                        <Route path="/invitations" element={
-                                <InvitationsPage />
-                         } />
+                        <Route path="/task" element={<TaskManagementPage />} />
                         <Route path="/user/friends" element={<FriendListPage />} />
                         <Route path="/user/search-friend" element={<SearchFriendPage />} />
                         <Route path="/user/request" element={<FriendRequests />} />

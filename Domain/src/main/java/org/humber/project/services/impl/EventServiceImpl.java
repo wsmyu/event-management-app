@@ -2,18 +2,18 @@ package org.humber.project.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.humber.project.domain.Booking;
-import org.humber.project.domain.Budget;
 import org.humber.project.domain.Event;
 import org.humber.project.exceptions.ErrorCode;
 import org.humber.project.exceptions.EventNotFoundException;
 import org.humber.project.exceptions.EventValidationException;
-import org.humber.project.services.*;
+import org.humber.project.services.BookingService;
+import org.humber.project.services.EventJPAService;
+import org.humber.project.services.EventService;
+import org.humber.project.services.EventValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,5 +209,8 @@ public class EventServiceImpl implements EventService {
         }
         return filteredEvents;
     }
-
+    @Override
+    public List<Event> findEventsByUserId(Long userId) {
+        return eventJPAService.findEventsByUserId(userId);
+    }
 }
