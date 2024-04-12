@@ -49,29 +49,4 @@ public class BudgetController {
         }
     }
 
-    @GetMapping("/{eventId}/detail")
-    public ResponseEntity<Budget> getEventBudgetDetail(@PathVariable Long eventId) {
-        try {
-            Budget budget = budgetService.findBudgetByEventId(eventId);
-            if (budget == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(budget);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PostMapping("/{eventId}/adjust")
-    public ResponseEntity<Budget> adjustEventBudget(@PathVariable Long eventId, @RequestBody Budget budgetDetails) {
-        try {
-            budgetDetails.setEventId(eventId);
-            Budget adjustedBudget = budgetService.adjustBudget(budgetDetails);
-            return ResponseEntity.ok(adjustedBudget);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-
 }
