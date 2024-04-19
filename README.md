@@ -1,26 +1,35 @@
-# Your Application Name
+# Event Management App
 
-## Description
-This is a template for a Java application using Spring Boot and Maven.
+## Overview
+The Event Management App is a comprehensive digital platform designed to streamline and simplify the process of organizing and managing various types of events, ranging from corporate conferences to personal celebrations like weddings and parties. With the increasing complexity and scale of modern events, the need for an efficient and user-friendly solution to manage all aspects of event planning becomes imperative. Our project aims to address this need by offering a robust online platform that empowers users to plan, organize, and execute events with ease.
 
-##### Note: 
-* This is not a perfect Hexagonal Architecture implementation.
-* Perfect Hexagonal Architecture would have following modules:
-  * Domain - Business Logic
-  * Application - Sandwich between Domain and Infrastructure (Ports and Adapters)
-  * Infrastructure - Database, File System, Network, etc.
+## Features
+- **User Registration and Authentication**
+- **Search and Filter**
+- **Event Management**
+- **Venue Selection and Booking**
+- **Event Budgeting Tool**
+- **Guest List Management**
+- **Friend List**
 
-## Project setup
-```
-mvn clean install
-```
 
-### Run
-```
-java -jar Infrastructure/target/Infrastructure-0.0.1-SNAPSHOT.jar
-```
+## Technologies Used
+- **Front-End:** React, Bootstrap
+- **Back-End:** Java, Spring Boot
+- **Database:** MySQL
 
-### Run Swagger
-```
-http://localhost:8080/swagger-ui.html
-```
+## Home Page
+![image](https://github.com/wsmyu/event-management-app/assets/118221964/95fd1132-5972-43c1-80d4-d5e4e0ad16a3)
+
+## Event Detail Page
+![image](https://github.com/wsmyu/event-management-app/assets/118221964/cf6b611c-f3d2-442c-81c2-fbacd12928ac)
+
+## Event Detail Page of the Event Creator
+![image](https://github.com/wsmyu/event-management-app/assets/118221964/8e6b8ed0-314c-4d2f-8f15-f8b101018be1)
+
+## Venue Booking Page
+![image](https://github.com/wsmyu/event-management-app/assets/118221964/25223850-18fb-4625-87f6-90cd75c12e5e)
+
+
+
+
