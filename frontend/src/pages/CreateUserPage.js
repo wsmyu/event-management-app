@@ -52,7 +52,7 @@ function CreateUser() {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 w-75">
       <div className="card">
         <div className="card-body">
           <h1 className="text-center mb-4">Create Account</h1>
@@ -129,8 +129,8 @@ function CreateUser() {
                 {errorMessage}
               </div>
             )}
-            <div className="d-grid gap-2">
-              <Button type="submit" className="btn btn-primary mt-3">Register</Button>
+            <div className="text-center gap-2">
+              <button type="submit" className="custom-button w-50">Register</button>
             </div>
           </Form>
           {/* Success toast */}

@@ -8,6 +8,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import Toast from 'react-bootstrap/Toast';
+import { DataTable } from 'primereact/datatable';
+import {Column} from "primereact/column";
+import {Link} from "react-router-dom";
 
 const SearchFriendPage = () => {
   const { loggedInUser } = useUser();
@@ -91,63 +94,66 @@ const SearchFriendPage = () => {
           </Form>
         </Col>
         <Col>
-          <Button variant="primary" onClick={handleSearch}>Search</Button>
+          <button className="custom-button" onClick={handleSearch}>Search</button>
         </Col>
       </Row>
 
       {searchResult && (
-        <div style={{ width: 'fit-content' }}>
-          <ListGroup style={{ width: 'fit-content', border: 'none' }}>
-            {searchResult.map(user => (
-              <ListGroup.Item key={user.userId} style={{ display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-                <Button variant="success" onClick={() => handleAddFriend(user.userId)} style={{ marginRight: '10px' }}>+</Button>
-                <a href="#" onClick={() => handleShowUserInfo(user)} style={{ textDecoration: 'underline' }}>{user.username}</a>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
+
+              <div className="card mt-3">
+                  <DataTable value={searchResult} tableStyle={{minWidth: '50rem'}}>
+                      <Column sortable field="userId" header="User Id"></Column>
+                      <Column sortable field="username" header="User Name"></Column>
+                      <Column sortable field="firstName" header="First Name"></Column>
+                      <Column sortable field="lastName" header="Last Name"></Column>
+                      <Column body={rowData => (
+                          <button className="custom-button" onClick={() => handleAddFriend(rowData.userId)}>
+                              <span className="p-button-text">Send friend request</span>
+                          </button>
+                      )}>
+                      </Column>
+                  </DataTable>
+              </div>
+
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>User Information</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedUser && (
-            <>
-              <p>User ID: {selectedUser.userId}</p>
-              <p>Username: {selectedUser.username}</p>
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>User Information</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {selectedUser && (
+                    <>
+                        <p>User ID: {selectedUser.userId}</p>
+                        <p>Username: {selectedUser.username}</p>
+                    </>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+            </Modal.Footer>
+        </Modal>
 
-      {/* Toast for success */}
-      <Toast
-        onClose={() => setShowSuccessToast(false)}
-        show={showSuccessToast}
-        delay={3000}
-        autohide
-        bg="success"
-        style={{
-          position: 'fixed',
-          top: 20,
-          right: 20,
-        }}
-      >
-        <Toast.Header closeButton={false}>
-          <strong className="me-auto">Success</strong>
-        </Toast.Header>
-        <Toast.Body>Friend request sent successfully!</Toast.Body>
-      </Toast>
+        {/* Toast for success */}
+        <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+            style={{
+                position: 'fixed',
+                top: 20,
+                right: 20,
+            }}
+        >
+            <Toast.Body>Friend request sent successfully!</Toast.Body>
+        </Toast>
 
 
-      {/* Toast for error */}
-      <Toast
-        onClose={() => setShowErrorToast(false)}
+        {/* Toast for error */}
+        <Toast
+            onClose={() => setShowErrorToast(false)}
         show={showErrorToast}
         delay={3000}
         autohide

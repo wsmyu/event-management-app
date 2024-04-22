@@ -151,14 +151,19 @@ const FriendRequests = () => {
                   <Row>
                     <Col>
                       <span>
-                        <a href="#" onClick={() => handleUsernameClick(request.senderInfo.userId)}>
+                        <a href="#" className="friend-request-username" onClick={() => handleUsernameClick(request.senderInfo.userId)} >
                           {request.senderInfo.username}
                         </a> sent you a friend request
                       </span>
                     </Col>
                     <Col xs="auto">
-                      <Button variant="success" className="ml-2" onClick={() => handleAcceptRequest(request.friendId, request.senderInfo.username)}>Accept</Button>
-                      <Button variant="danger" className="ml-2" onClick={() => handleDeleteRequest(request.friendId, request.senderInfo.username)}>Delete</Button>
+                      <div
+                          className="d-flex gap-2">
+                        <Button variant="outline-success"
+                                onClick={() => handleAcceptRequest(request.friendId, request.senderInfo.username)}>Accept</Button>
+                        <Button variant="outline-danger"
+                                onClick={() => handleDeleteRequest(request.friendId, request.senderInfo.username)}>Delete</Button>
+                      </div>
                     </Col>
                   </Row>
                 </ListGroup.Item>

@@ -95,3 +95,12 @@
   color:white;
 }
 
+.friend-request-username{
+  text-decoration:none;
+  color:black;
+  font-weight: bold;
+}
+
+.friend-request-username:hover{
+  color:gray;
+}

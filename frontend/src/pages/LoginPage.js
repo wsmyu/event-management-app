@@ -88,11 +88,11 @@ const LoginPage = () => {
     };
 
     return (
-        <Container>
-            <h1>Login</h1>
+        <div className="container d-flex justify-content-center align-items-center ">
+            <div className="text-center">
+            <h1 className="mb-3">Login</h1>
             <Form noValidate validated={validated} onSubmit={handleLoginRequest}>
                 <Form.Group className="mb-3" controlId="validationCustomUsername">
-                    <Form.Label>Username</Form.Label>
                     <Form.Control
                         type="text"
                         placeholder="Username"
@@ -107,7 +107,6 @@ const LoginPage = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="validationCustomPassword">
-                    <Form.Label>Password</Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Password"
@@ -120,8 +119,10 @@ const LoginPage = () => {
                         Please provide a password.
                     </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit">Login</Button>
+                <button className="custom-button" type="submit">Login</button>
+
             </Form>
+            </div>
 
             {/* Toast for error */}
             <Toast
@@ -136,9 +137,6 @@ const LoginPage = () => {
                     right: 20,
                 }}
             >
-                <Toast.Header closeButton={false}>
-                    <strong className="me-auto">Error</strong>
-                </Toast.Header>
                 <Toast.Body>{errorMessage}</Toast.Body>
             </Toast>
 
@@ -155,12 +153,9 @@ const LoginPage = () => {
                     right: 20,
                 }}
             >
-                <Toast.Header closeButton={false}>
-                    <strong className="me-auto">Success</strong>
-                </Toast.Header>
                 <Toast.Body>Login successful!</Toast.Body>
             </Toast>
-        </Container>
+        </div>
     );
 };
 
