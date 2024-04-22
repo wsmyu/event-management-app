@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface EventJPARepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findByEventNameContaining(String eventName);
-
+    List<EventEntity> findByUserId(Long userId);
     List<EventEntity> findByEventType(String eventType);
 
     @Query("SELECT e FROM EventEntity e JOIN VenueEntity v ON e.venueId = v.venueId WHERE v.city = :city")

@@ -35,7 +35,9 @@ public class EventJPAServiceImpl implements EventJPAService {
 
     @Override
     public List<Event> findEventsByUserId(Long userId) {
-        return null;
+        return Optional.of(eventJPARepository.findByUserId(userId))
+                .map(EventEntityTransformer::transformToEvents)
+                .orElse(null);
     }
 
     @Override

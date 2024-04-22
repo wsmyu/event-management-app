@@ -40,7 +40,6 @@ const Header = () => {
                                     <NavDropdown.Item as={Link} to={`/user/search-friend`}>Search for
                                         Friend</NavDropdown.Item>
                                 </NavDropdown>
-                                <Nav.Link as={Link} to={`/task`}>Task</Nav.Link>
 
                             </>
                         )}
@@ -58,9 +57,12 @@ const Header = () => {
                     </Form>
                     {loggedInUser ? (
                         <Nav>
-                            <Nav.Link>Logged in as: {loggedInUser.username}</Nav.Link>
-                            <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                            <NavDropdown title={`Logged in as: ${loggedInUser.username}`} id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to={`/event/user/${loggedInUser.userId}`}>My Events</NavDropdown.Item>
+                                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                            </NavDropdown>
                         </Nav>
+
                     ) : (
                         <Nav>
                             <Nav.Link as={Link} to="/login">Login</Nav.Link>

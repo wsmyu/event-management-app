@@ -89,13 +89,10 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete event");
         }
     }
-    @GetMapping("/user/{userId}/events")
+    @GetMapping("user/{userId}")
     public ResponseEntity<List<Event>> getEventsByUserId(@PathVariable Long userId) {
-        List<Event> events = eventService.findEventsByUserId(userId);
-        if(events.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(events);
+            List<Event> events = eventService.findEventsByUserId(userId);
+            return ResponseEntity.ok(events);
     }
 
 }
