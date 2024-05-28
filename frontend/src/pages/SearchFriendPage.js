@@ -86,7 +86,7 @@ const SearchFriendPage = () => {
 
   return (
     <Container>
-      <h1>Search for friends</h1>
+      <h2>Search for friends</h2>
       <Row className="mb-3">
         <Col md={6}>
           <Form>

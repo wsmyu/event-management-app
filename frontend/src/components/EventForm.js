@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
+const EventForm = ({ event, handleChange, handleSubmit, buttonText,testID,validationErrors  }) => {
     const eventTypes = [
         "Conference",
         "Exhibition",
@@ -16,6 +16,7 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                     <input type="text" className="form-control input-box" id="eventName" name="eventName"
                            value={event.eventName}
                            onChange={(e) => handleChange("eventName", e.target.value)}/>
+                    {validationErrors.eventName && <div style={{ color: 'red' }}>{validationErrors.eventName}</div>}
                 </div>
             <div className="mb-3">
                 <label htmlFor="eventType" className="form-label">Event Type</label>
@@ -28,12 +29,14 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                     ))}
 
                 </select>
+                {validationErrors.eventType && <div style={{ color: 'red' }}>{validationErrors.eventType}</div>}
             </div>
             <div className="mb-3">
                 <label htmlFor="eventDate" className="form-label">Event Date</label>
                 <input type="date" className="form-control input-box" id="eventDate" name="eventDate"
                        value={event.eventDate}
                        onChange={(e) => handleChange("eventDate", e.target.value)}/>
+                {validationErrors.eventType && <div style={{ color: 'red' }}>{validationErrors.eventDate}</div>}
             </div>
             <div className="mb-3">
             <label htmlFor="eventStartTime" className="form-label">Event Start Time</label>
@@ -41,12 +44,14 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                            name="eventStartTime"
                            value={event.eventStartTime}
                            onChange={(e) => handleChange("eventStartTime", e.target.value)}/>
+                {validationErrors.eventType && <div style={{ color: 'red' }}>{validationErrors.eventStartTime}</div>}
                 </div>
                 <div className="mb-3">
                     <label htmlFor="eventEndTime" className="form-label">Event End Time</label>
                     <input type="time"  className="form-control input-box" id="eventEndTime" name="eventEndTime"
                            value={event.eventEndTime}
                            onChange={(e) => handleChange("eventEndTime", e.target.value)}/>
+                    {validationErrors.eventType && <div style={{ color: 'red' }}>{validationErrors.eventEndTime}</div>}
                 </div>
 
                 <div className="mb-3">
@@ -55,9 +60,10 @@ const EventForm = ({ event, handleChange, handleSubmit, buttonText }) => {
                               name="eventDescription"
                               value={event.eventDescription}
                               onChange={(e) => handleChange("eventDescription", e.target.value)}/>
+                    {validationErrors.eventType && <div style={{ color: 'red' }}>{validationErrors.eventDescription}</div>}
                 </div>
                 <div className="text-center mt-3">
-                    <button type="submit" className="custom-button">{buttonText}</button>
+                    <button type="submit" data-testid={testID} className="custom-button">{buttonText}</button>
                 </div>
 
             </form>

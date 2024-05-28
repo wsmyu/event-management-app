@@ -67,15 +67,16 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event updateEventInfo(Long eventId, Event event) {
         try {
-            for (EventValidationService validationService : eventValidationService) {
-                // Perform validation using the current validation service
-                validationService.validateEvent(event);
-            }
+
             Event existingEvent = eventJPAService.findEventById(eventId);
             if (existingEvent == null) {
                 throw new EventNotFoundException(ErrorCode.EVENT_NOT_FOUND);
             }
 
+            for (EventValidationService validationService : eventValidationService) {
+                // Perform validation using the current validation service
+                validationService.validateEvent(event);
+            }
             // Update event details
             existingEvent.setEventName(event.getEventName());
             existingEvent.setEventType(event.getEventType());
@@ -93,8 +94,8 @@ public class EventServiceImpl implements EventService {
             log.error("Event Invalid: {}", e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("Failed to create event:{} ", e.getMessage());
-            throw new RuntimeException("Failed to update event venue: " + e.getMessage());
+            log.error("Failed to update event:{} ", e.getMessage());
+            throw new RuntimeException("Failed to update event: " + e.getMessage());
         }
     }
 

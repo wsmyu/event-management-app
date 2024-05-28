@@ -19,6 +19,7 @@ const CreateEventPage = () => {
     const [toastVariant, setToastVariant] = useState('success');
     const [showToast, setShowToast] = useState(false);
     const [showSuccessPage, setShowSuccessPage] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
     const loggedInUser = useUser().loggedInUser;
     const showSuccessMessage = (message) => {
         setShowToast(true);
@@ -40,9 +41,24 @@ const CreateEventPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Define an array of field names
+        const requiredFields = ['eventName', 'eventType', 'eventDate', 'eventStartTime', 'eventEndTime', 'eventDescription'];
 
+        // Validation logic
+        const errors = {};
+        requiredFields.forEach(field => {
+            if (!event[field]) {
+                errors[field] = `${field.charAt(0).toUpperCase()+ field.split(/(?=[A-Z])/).join(' ').slice(1)} is required`;
+            }
+        });
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        } else {
+            setValidationErrors({});
+        }
         try {
-
             // Modify the event object to include the userId
             const eventWithUserId = {
                 ...event,
@@ -56,6 +72,15 @@ const CreateEventPage = () => {
                 },
                 body: JSON.stringify(eventWithUserId)
             });
+
+            if (!response) {
+                console.error('No response received');
+            }
+
+            if (!response.ok) {
+                console.error('Network response was not ok');
+            }
+
             if (response.ok) {
                 // Scroll to the top of the page
                 const responseBody = await response.json();
@@ -90,6 +115,8 @@ const CreateEventPage = () => {
                                 setShowToast={setShowToast}
                                 toastVariant={toastVariant}
                                 toastMessage={toastMessage}
+                                testID="toast-message"
+
                             />
                             <h1>Create Event</h1>
                             <EventForm
@@ -97,6 +124,8 @@ const CreateEventPage = () => {
                                 handleChange={handleChange}
                                 handleSubmit={handleSubmit}
                                 buttonText="Create Event"
+                                testID="create-event-button"
+                                validationErrors={validationErrors}
                             />
                         </div>
                     )

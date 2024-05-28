@@ -2,7 +2,7 @@ import React from 'react';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from "react-bootstrap/ToastContainer";
 
-const CustomToast = ({ showToast, setShowToast, toastVariant, toastMessage }) => {
+const CustomToast = ({ showToast, setShowToast, toastVariant, toastMessage,testID }) => {
     return (
         <ToastContainer
             className="p-3"
@@ -16,7 +16,7 @@ const CustomToast = ({ showToast, setShowToast, toastVariant, toastMessage }) =>
             autohide
             className={`bg-${toastVariant}`}
         >
-            <Toast.Body className="toast-body">{toastMessage}</Toast.Body>
+            <Toast.Body className="toast-body" data-testid={testID}>{toastMessage}</Toast.Body>
         </Toast>
         </ToastContainer>
 

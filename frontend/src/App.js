@@ -16,7 +16,7 @@ import FriendListPage from "./pages/FriendListPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import FriendRequests from "./pages/FriendRequests";
 import GuestManagementPage from "./pages/GuestManagementPage";
-import InvitationsPage from "./components/InvitationsPage";
+import InvitationsPage from "./pages/InvitationsPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import Footer from "./components/Footer";
 import UserEventPage from "./pages/UserEventPage";

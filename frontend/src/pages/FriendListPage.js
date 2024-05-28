@@ -164,7 +164,7 @@ const FriendList = () => {
    }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <Container>
       <div>
         <h2>Friend List</h2>
         {friends.length === 0 ? (
@@ -178,8 +178,8 @@ const FriendList = () => {
               >
                 <span>{friend.username}</span>
                 <div>
-                  <Button variant="primary" size="sm" onClick={() => handleShowUserInfo(friend)}>Info</Button>
-                  <Button variant="danger" size="sm" onClick={() => handleDeleteFriend(friend.friendId)}>Delete</Button>
+                  <Button className="mx-3" variant="outline-primary" onClick={() => handleShowUserInfo(friend)}>Info</Button>
+                  <Button variant="outline-danger" onClick={() => handleDeleteFriend(friend.friendId)}>Delete</Button>
                 </div>
               </ListGroup.Item>
             ))}
@@ -242,7 +242,7 @@ const FriendList = () => {
           <Toast.Body>Friend deleted successfully.</Toast.Body>
         </Toast>
       </div>
-    </div>
+    </Container>
   );
 };
 

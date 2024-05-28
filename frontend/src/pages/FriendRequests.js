@@ -139,7 +139,7 @@ const FriendRequests = () => {
   }
   return (
     <Container>
-      <Row className="justify-content-center">
+      <Row>
         <Col xs={12} md={8}>
           <h2>Friend Requests</h2>
           {friendRequests.length === 0 ? (

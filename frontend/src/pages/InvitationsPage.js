@@ -80,7 +80,7 @@ const InvitationsPage = () => {
   };
 
     return (
-      <Container className="mt-5">
+      <Container className="mt-3">
         <h2 className="mb-4">My Invitations</h2>
         {invitations.length > 0 ? (
           invitations.map((invitation) => (

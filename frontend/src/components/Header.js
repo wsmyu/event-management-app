@@ -59,14 +59,14 @@ const Header = () => {
                             </NavDropdown>
                         )}
                     </Nav>
-                    <Nav>
+                    <Nav className="ms-auto">
                         {loggedInUser ? (
                             <NavDropdown title={<><CiUser/> {loggedInUser.username}</>} id="basic-nav-dropdown">
                                 <NavDropdown.Item as={Link} to={`/event/user/${loggedInUser.userId}`}>My Events</NavDropdown.Item>
                                 <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         ) : (
-                            <Nav>
+                            <Nav >
                                 <Nav.Link as={Link} to="/login">Login</Nav.Link>
                                 <Nav.Link as={Link} to="/register">Register</Nav.Link>
                             </Nav>
